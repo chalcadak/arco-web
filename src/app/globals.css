@@ -1,25 +1,26 @@
 @import "tailwindcss";
 
 /* ARCO Design System - Premium Dog Fashion */
+/* Light Theme Only - Premium Fashion Brand */
 
 :root {
-  /* Brand Colors */
-  --arco-primary: 0 0% 9%;           /* Almost black for premium feel */
+  /* Brand Colors - Premium Black & White */
+  --arco-primary: 0 0% 9%;           /* Premium black */
   --arco-primary-foreground: 0 0% 98%;
   --arco-secondary: 240 4.8% 95.9%;
   --arco-secondary-foreground: 240 5.9% 10%;
   --arco-accent: 210 40% 96.1%;
   --arco-accent-foreground: 222.2 47.4% 11.2%;
   
-  /* Neutral Palette */
-  --background: 0 0% 100%;
-  --foreground: 0 0% 9%;
-  --card: 0 0% 100%;
+  /* Neutral Palette - Clean White Background */
+  --background: 0 0% 100%;           /* Pure white */
+  --foreground: 0 0% 9%;             /* Almost black text */
+  --card: 0 0% 98%;                  /* Slightly off-white for cards */
   --card-foreground: 0 0% 9%;
   --popover: 0 0% 100%;
   --popover-foreground: 0 0% 9%;
   
-  /* Borders */
+  /* Borders - Subtle gray */
   --border: 240 5.9% 90%;
   --input: 240 5.9% 90%;
   --ring: 0 0% 9%;
@@ -27,27 +28,11 @@
   /* Status Colors */
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
-  --muted: 240 4.8% 95.9%;
+  --muted: 240 4.8% 97%;             /* Lighter muted background */
   --muted-foreground: 240 3.8% 46.1%;
   
-  /* Radius */
+  /* Radius - Slightly more rounded for modern feel */
   --radius: 0.5rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: 0 0% 9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 9%;
-    --popover-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-  }
 }
 
 @theme inline {

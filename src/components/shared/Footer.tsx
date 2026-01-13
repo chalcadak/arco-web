@@ -11,9 +11,6 @@ export function Footer() {
             <p className="text-sm text-muted-foreground">
               프리미엄 반려견 패션 브랜드
             </p>
-            <p className="text-xs text-muted-foreground">
-              &quot;DOGUE&quot; - 반려견을 위한 하이패션
-            </p>
           </div>
 
           {/* Shop */}

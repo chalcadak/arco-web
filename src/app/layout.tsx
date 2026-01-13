@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ARCO - Premium Dog Fashion",
   description: "프리미엄 반려견 패션 브랜드. 판매상품과 전문 촬영 서비스를 제공합니다.",
-  keywords: ["반려견", "강아지", "패션", "의류", "촬영", "DOGUE", "ARCO"],
+  keywords: ["반려견", "강아지", "패션", "의류", "촬영", "ARCO"],
 };
 
 export default function RootLayout({
