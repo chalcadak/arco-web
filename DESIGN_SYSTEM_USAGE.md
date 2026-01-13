@@ -1,5 +1,25 @@
 # 🎨 ARCO 디자인 시스템 사용 가이드
 
+## 🔤 폰트 (Pretendard Variable)
+
+ARCO는 한글 가독성을 위해 **Pretendard Variable** 폰트를 사용합니다.
+
+### 특징
+- ✅ **Variable Font**: 45~920 범위의 가변 굵기
+- ✅ **최적화**: Dynamic subset으로 빠른 로딩
+- ✅ **한글 최적화**: 한글 타이포그래피에 특화
+- ✅ **CDN 제공**: jsdelivr CDN으로 자동 로드
+
+### 자동 적용
+모든 페이지에 자동으로 적용되며, 별도 설정 불필요합니다.
+
+```css
+/* globals.css에 자동 포함 */
+font-family: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+```
+
+---
+
 ## 📦 설치 및 Import
 
 ### 기본 Import
