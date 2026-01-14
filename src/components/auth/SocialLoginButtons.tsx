@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 
@@ -9,7 +9,7 @@ type Provider = 'google' | 'kakao';
 
 export function SocialLoginButtons() {
   const [isLoading, setIsLoading] = useState<string | null>(null);
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const handleSocialLogin = async (provider: Provider) => {
     setIsLoading(provider);

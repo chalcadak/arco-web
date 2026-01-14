@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/typography';
 import { Tag, X, Loader2 } from 'lucide-react';
@@ -18,7 +18,7 @@ export function CouponInput({
   onCouponApplied,
   onCouponRemoved,
 }: CouponInputProps) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const [couponCode, setCouponCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<CouponValidation | null>(null);
