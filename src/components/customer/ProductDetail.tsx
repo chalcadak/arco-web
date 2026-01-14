@@ -11,6 +11,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useCartStore } from '@/stores/cartStore';
 import ReviewForm from '@/components/shared/ReviewForm';
 import ReviewList from '@/components/shared/ReviewList';
+import StockNotificationModal from '@/components/shared/StockNotificationModal';
 
 interface ProductDetailProps {
   product: Product;
@@ -27,6 +28,7 @@ export default function ProductDetail({ product, relatedProducts }: ProductDetai
   const [quantity, setQuantity] = useState(1);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [refreshReviews, setRefreshReviews] = useState(0);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const images = product.images && product.images.length > 0 
     ? product.images 
@@ -229,23 +231,34 @@ export default function ProductDetail({ product, relatedProducts }: ProductDetai
 
           {/* 버튼 */}
           <div className="flex gap-3 pt-4">
-            <Button
-              size="lg"
-              className="flex-1"
-              onClick={handleAddToCart}
-              disabled={isOutOfStock}
-            >
-              장바구니 담기
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="flex-1"
-              onClick={handleBuyNow}
-              disabled={isOutOfStock}
-            >
-              바로 구매
-            </Button>
+            {isOutOfStock ? (
+              <Button
+                size="lg"
+                variant="outline"
+                className="flex-1"
+                onClick={() => setShowNotificationModal(true)}
+              >
+                🔔 재입고 알림 신청
+              </Button>
+            ) : (
+              <>
+                <Button
+                  size="lg"
+                  className="flex-1"
+                  onClick={handleAddToCart}
+                >
+                  장바구니 담기
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={handleBuyNow}
+                >
+                  바로 구매
+                </Button>
+              </>
+            )}
           </div>
 
           {/* 상품 상세 정보 */}
@@ -337,6 +350,14 @@ export default function ProductDetail({ product, relatedProducts }: ProductDetai
           reviewableId={product.id}
         />
       </div>
+
+      {/* Stock Notification Modal */}
+      <StockNotificationModal
+        productId={product.id}
+        productName={product.name}
+        isOpen={showNotificationModal}
+        onClose={() => setShowNotificationModal(false)}
+      />
     </div>
   );
 }
