@@ -14,6 +14,7 @@ import ReviewList from '@/components/shared/ReviewList';
 import StockNotificationModal from '@/components/shared/StockNotificationModal';
 import { RecentlyViewed, addToRecentlyViewed } from '@/components/shared/RecentlyViewed';
 import { ShareButton } from '@/components/shared/ShareButton';
+import ImageLightbox from '@/components/shared/ImageLightbox';
 
 interface ProductDetailProps {
   product: Product;
@@ -32,6 +33,7 @@ export default function ProductDetail({ product, relatedProducts }: ProductDetai
   const [refreshReviews, setRefreshReviews] = useState(0);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [activeTab, setActiveTab] = useState<'details' | 'reviews' | 'shipping'>('details');
+  const [showLightbox, setShowLightbox] = useState(false);
 
   // Add product to recently viewed on mount
   useEffect(() => {
@@ -81,12 +83,15 @@ export default function ProductDetail({ product, relatedProducts }: ProductDetai
         {/* 이미지 갤러리 */}
         <div className="space-y-4">
           {/* 메인 이미지 */}
-          <div className="relative aspect-square rounded-lg overflow-hidden bg-neutral-100">
+          <div 
+            className="relative aspect-square rounded-lg overflow-hidden bg-neutral-100 cursor-zoom-in"
+            onClick={() => setShowLightbox(true)}
+          >
             <Image
               src={images[selectedImage]}
               alt={product.name}
               fill
-              className="object-cover"
+              className="object-cover hover:scale-105 transition-transform duration-300"
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
@@ -563,6 +568,16 @@ export default function ProductDetail({ product, relatedProducts }: ProductDetai
         isOpen={showNotificationModal}
         onClose={() => setShowNotificationModal(false)}
       />
+
+      {/* Image Lightbox */}
+      {showLightbox && (
+        <ImageLightbox
+          images={images}
+          currentIndex={selectedImage}
+          onClose={() => setShowLightbox(false)}
+          productName={product.name}
+        />
+      )}
     </div>
   );
 }
