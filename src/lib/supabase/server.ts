@@ -1,12 +1,18 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { getEnv } from '@/lib/config/env'
 
+/**
+ * 서버용 Supabase 클라이언트 생성
+ * 환경 변수를 중앙에서 관리하여 타입 안전성 보장
+ */
 export async function createClient() {
+  const env = getEnv();
   const cookieStore = await cookies()
 
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    env.supabase.url,
+    env.supabase.anonKey,
     {
       cookies: {
         getAll() {
