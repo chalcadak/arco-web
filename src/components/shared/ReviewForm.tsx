@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Star, Loader2, Upload, X } from 'lucide-react';
+import { Star, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { createClient } from '@/lib/supabase/client';
+import ImageUpload from '@/components/admin/ImageUpload';
 import type { ReviewFormData } from '@/types/review';
 
 interface ReviewFormProps {
@@ -166,6 +167,23 @@ export default function ReviewForm({
             />
             <p className="text-xs text-gray-500 mt-1">
               최소 10자 이상 작성해주세요.
+            </p>
+          </div>
+
+          {/* Image Upload */}
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              리뷰 사진 (선택)
+            </label>
+            <ImageUpload
+              images={formData.images || []}
+              onImagesChange={(images) =>
+                setFormData({ ...formData, images })
+              }
+              maxImages={5}
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              최대 5장까지 업로드 가능합니다.
             </p>
           </div>
 

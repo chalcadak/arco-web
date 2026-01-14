@@ -14,6 +14,7 @@ import {
   LogOut,
   Menu,
   X,
+  Star,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -26,6 +27,7 @@ const navigation = [
   { name: '주문 관리', href: '/admin/orders', icon: ShoppingCart },
   { name: '촬영룩 관리', href: '/admin/photoshoots', icon: Camera },
   { name: '예약 관리', href: '/admin/bookings', icon: Calendar },
+  { name: '리뷰 관리', href: '/admin/reviews', icon: Star },
 ];
 
 export function AdminLayout({ children }: AdminLayoutProps) {

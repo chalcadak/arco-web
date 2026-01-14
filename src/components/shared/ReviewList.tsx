@@ -179,6 +179,40 @@ interface ReviewCardProps {
 }
 
 function ReviewCard({ review }: ReviewCardProps) {
+  const [hasVoted, setHasVoted] = useState(false);
+  const [localHelpfulCount, setLocalHelpfulCount] = useState(review.helpful_count);
+
+  // Check if user has already voted (localStorage)
+  useState(() => {
+    const voted = localStorage.getItem(`review-vote-${review.id}`);
+    if (voted) setHasVoted(true);
+  });
+
+  const handleHelpfulVote = async () => {
+    if (hasVoted) return;
+
+    try {
+      const supabase = createClient();
+      
+      // Increment helpful_count in database
+      const { error } = await supabase
+        .from('reviews')
+        .update({ helpful_count: localHelpfulCount + 1 })
+        .eq('id', review.id);
+
+      if (error) throw error;
+
+      // Update local state
+      setLocalHelpfulCount((prev) => prev + 1);
+      setHasVoted(true);
+
+      // Store vote in localStorage
+      localStorage.setItem(`review-vote-${review.id}`, 'true');
+    } catch (error) {
+      console.error('Error voting:', error);
+    }
+  };
+
   const formattedDate = new Date(review.created_at).toLocaleDateString('ko-KR', {
     year: 'numeric',
     month: 'long',
@@ -247,13 +281,16 @@ function ReviewCard({ review }: ReviewCardProps) {
           {/* Footer */}
           <div className="flex items-center gap-4 pt-2 border-t border-gray-100">
             <button
-              className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 transition-colors"
-              onClick={() => {
-                // TODO: Implement helpful vote
-              }}
+              className={`flex items-center gap-1 text-sm transition-colors ${
+                hasVoted
+                  ? 'text-blue-600 font-medium'
+                  : 'text-gray-500 hover:text-gray-900'
+              }`}
+              onClick={handleHelpfulVote}
+              disabled={hasVoted}
             >
-              <ThumbsUp className="w-4 h-4" />
-              <span>도움돼요 {review.helpful_count}</span>
+              <ThumbsUp className={`w-4 h-4 ${hasVoted ? 'fill-blue-600' : ''}`} />
+              <span>도움돼요 {localHelpfulCount}</span>
             </button>
           </div>
         </div>
