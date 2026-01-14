@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { useCartStore } from '@/stores/cartStore';
+import ReviewForm from '@/components/shared/ReviewForm';
+import ReviewList from '@/components/shared/ReviewList';
 
 interface ProductDetailProps {
   product: Product;
@@ -23,6 +25,8 @@ export default function ProductDetail({ product, relatedProducts }: ProductDetai
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [selectedColor, setSelectedColor] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [refreshReviews, setRefreshReviews] = useState(0);
 
   const images = product.images && product.images.length > 0 
     ? product.images 
@@ -298,6 +302,41 @@ export default function ProductDetail({ product, relatedProducts }: ProductDetai
           </div>
         </div>
       )}
+
+      {/* 리뷰 섹션 */}
+      <div className="mt-16 space-y-8">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold">상품 리뷰</h2>
+          <Button
+            variant="outline"
+            onClick={() => setShowReviewForm(!showReviewForm)}
+          >
+            {showReviewForm ? '리뷰 작성 취소' : '리뷰 작성하기'}
+          </Button>
+        </div>
+
+        {/* Review Form */}
+        {showReviewForm && (
+          <div className="animate-in slide-in-from-top-5 duration-300">
+            <ReviewForm
+              reviewableType="product"
+              reviewableId={product.id}
+              onSuccess={() => {
+                setShowReviewForm(false);
+                setRefreshReviews((prev) => prev + 1);
+              }}
+              onCancel={() => setShowReviewForm(false)}
+            />
+          </div>
+        )}
+
+        {/* Review List */}
+        <ReviewList
+          key={refreshReviews}
+          reviewableType="product"
+          reviewableId={product.id}
+        />
+      </div>
     </div>
   );
 }

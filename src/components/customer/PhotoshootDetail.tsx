@@ -7,6 +7,8 @@ import { PhotoshootLook } from '@/types/product';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import ReviewForm from '@/components/shared/ReviewForm';
+import ReviewList from '@/components/shared/ReviewList';
 
 interface PhotoshootDetailProps {
   look: PhotoshootLook;
@@ -15,6 +17,8 @@ interface PhotoshootDetailProps {
 
 export default function PhotoshootDetail({ look, relatedLooks }: PhotoshootDetailProps) {
   const [selectedImage, setSelectedImage] = useState(0);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [refreshReviews, setRefreshReviews] = useState(0);
 
   const images = look.images && look.images.length > 0 
     ? look.images 
@@ -214,6 +218,41 @@ export default function PhotoshootDetail({ look, relatedLooks }: PhotoshootDetai
           </div>
         </div>
       )}
+
+      {/* 리뷰 섹션 */}
+      <div className="mt-16 space-y-8">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold">촬영 리뷰</h2>
+          <Button
+            variant="outline"
+            onClick={() => setShowReviewForm(!showReviewForm)}
+          >
+            {showReviewForm ? '리뷰 작성 취소' : '리뷰 작성하기'}
+          </Button>
+        </div>
+
+        {/* Review Form */}
+        {showReviewForm && (
+          <div className="animate-in slide-in-from-top-5 duration-300">
+            <ReviewForm
+              reviewableType="photoshoot"
+              reviewableId={look.id}
+              onSuccess={() => {
+                setShowReviewForm(false);
+                setRefreshReviews((prev) => prev + 1);
+              }}
+              onCancel={() => setShowReviewForm(false)}
+            />
+          </div>
+        )}
+
+        {/* Review List */}
+        <ReviewList
+          key={refreshReviews}
+          reviewableType="photoshoot"
+          reviewableId={look.id}
+        />
+      </div>
     </div>
   );
 }
