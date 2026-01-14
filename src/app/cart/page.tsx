@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCartStore } from '@/stores/cartStore';
@@ -7,14 +8,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Container } from '@/components/ui/container';
 import { Heading, Text } from '@/components/ui/typography';
+import { CouponInput } from '@/components/shared/CouponInput';
 import { Minus, Plus, X } from 'lucide-react';
+import type { CouponValidation } from '@/types/coupon';
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, getTotalPrice, clearCart } = useCartStore();
+  const [appliedCoupon, setAppliedCoupon] = useState<CouponValidation | null>(null);
 
   const totalPrice = getTotalPrice();
   const shippingFee = totalPrice >= 50000 ? 0 : 3000;
-  const finalPrice = totalPrice + shippingFee;
+  const discountAmount = appliedCoupon?.discount_amount || 0;
+  const finalPrice = totalPrice + shippingFee - discountAmount;
 
   if (items.length === 0) {
     return (
@@ -183,11 +188,28 @@ export default function CartPage() {
                         )}
                       </Text>
                     </div>
+                    {discountAmount > 0 && (
+                      <div className="flex justify-between">
+                        <Text size="sm" className="text-muted-foreground">쿠폰 할인</Text>
+                        <Text size="sm" className="font-semibold text-green-600">
+                          -{discountAmount.toLocaleString()}원
+                        </Text>
+                      </div>
+                    )}
                     {shippingFee > 0 && (
                       <Text size="xs" className="text-muted-foreground">
                         {(50000 - totalPrice).toLocaleString()}원 더 담으면 무료 배송!
                       </Text>
                     )}
+                  </div>
+
+                  {/* 쿠폰 입력 */}
+                  <div className="border-t pt-4">
+                    <CouponInput
+                      orderAmount={totalPrice}
+                      onCouponApplied={(validation) => setAppliedCoupon(validation)}
+                      onCouponRemoved={() => setAppliedCoupon(null)}
+                    />
                   </div>
 
                   <div className="border-t pt-4">
