@@ -31,6 +31,7 @@ export default function ProductDetail({ product, relatedProducts }: ProductDetai
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [refreshReviews, setRefreshReviews] = useState(0);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<'details' | 'reviews' | 'shipping'>('details');
 
   // Add product to recently viewed on mount
   useEffect(() => {
@@ -294,6 +295,227 @@ export default function ProductDetail({ product, relatedProducts }: ProductDetai
         </div>
       </div>
 
+      {/* Product Information Tabs */}
+      <div className="mt-16">
+        {/* Tab Navigation */}
+        <div className="border-b">
+          <div className="flex gap-8">
+            <button
+              onClick={() => setActiveTab('details')}
+              className={`pb-4 px-2 font-semibold transition-colors relative ${
+                activeTab === 'details'
+                  ? 'text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              상품 정보
+              {activeTab === 'details' && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab('reviews')}
+              className={`pb-4 px-2 font-semibold transition-colors relative ${
+                activeTab === 'reviews'
+                  ? 'text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              리뷰
+              {activeTab === 'reviews' && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab('shipping')}
+              className={`pb-4 px-2 font-semibold transition-colors relative ${
+                activeTab === 'shipping'
+                  ? 'text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              배송/반품 안내
+              {activeTab === 'shipping' && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        <div className="py-8">
+          {/* Details Tab */}
+          {activeTab === 'details' && (
+            <div className="space-y-6 max-w-3xl">
+              <div>
+                <h3 className="font-semibold text-lg mb-3">상품 설명</h3>
+                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                  {product.description || '상품 설명이 없습니다.'}
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="font-semibold text-lg mb-3">소재 정보</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between py-2 border-b">
+                      <span className="text-muted-foreground">주소재</span>
+                      <span className="font-medium">면 100%</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b">
+                      <span className="text-muted-foreground">세탁방법</span>
+                      <span className="font-medium">손세탁 권장</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b">
+                      <span className="text-muted-foreground">제조국</span>
+                      <span className="font-medium">대한민국</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-lg mb-3">사이즈 가이드</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between py-2 border-b">
+                      <span className="text-muted-foreground">S</span>
+                      <span className="font-medium">가슴둘레 88cm</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b">
+                      <span className="text-muted-foreground">M</span>
+                      <span className="font-medium">가슴둘레 92cm</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b">
+                      <span className="text-muted-foreground">L</span>
+                      <span className="font-medium">가슴둘레 96cm</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Card className="bg-muted/50">
+                <CardContent className="p-4">
+                  <p className="text-sm text-muted-foreground">
+                    ※ 상품의 색상은 모니터 사양에 따라 실제와 다소 차이가 있을 수 있습니다.
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    ※ 사이즈는 측정 방법에 따라 1-3cm 오차가 있을 수 있습니다.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Reviews Tab */}
+          {activeTab === 'reviews' && (
+            <div className="space-y-8">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold">고객 리뷰</h3>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowReviewForm(!showReviewForm)}
+                >
+                  {showReviewForm ? '리뷰 작성 취소' : '리뷰 작성하기'}
+                </Button>
+              </div>
+
+              {/* Review Form */}
+              {showReviewForm && (
+                <div className="animate-in slide-in-from-top-5 duration-300">
+                  <ReviewForm
+                    reviewableType="product"
+                    reviewableId={product.id}
+                    onSuccess={() => {
+                      setShowReviewForm(false);
+                      setRefreshReviews((prev) => prev + 1);
+                    }}
+                    onCancel={() => setShowReviewForm(false)}
+                  />
+                </div>
+              )}
+
+              {/* Review List */}
+              <ReviewList
+                key={refreshReviews}
+                reviewableType="product"
+                reviewableId={product.id}
+              />
+            </div>
+          )}
+
+          {/* Shipping Tab */}
+          {activeTab === 'shipping' && (
+            <div className="space-y-6 max-w-3xl">
+              <div>
+                <h3 className="font-semibold text-lg mb-3">배송 안내</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex py-2 border-b">
+                    <span className="text-muted-foreground w-32">배송비</span>
+                    <span className="font-medium">3,000원 (50,000원 이상 무료배송)</span>
+                  </div>
+                  <div className="flex py-2 border-b">
+                    <span className="text-muted-foreground w-32">배송 기간</span>
+                    <span className="font-medium">주문 후 2-3일 이내 (영업일 기준)</span>
+                  </div>
+                  <div className="flex py-2 border-b">
+                    <span className="text-muted-foreground w-32">배송 지역</span>
+                    <span className="font-medium">전국 (제주/도서산간 추가 배송비)</span>
+                  </div>
+                  <div className="flex py-2 border-b">
+                    <span className="text-muted-foreground w-32">택배사</span>
+                    <span className="font-medium">CJ대한통운</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-lg mb-3">교환 및 반품 안내</h3>
+                <div className="space-y-3 text-sm text-muted-foreground">
+                  <div>
+                    <h4 className="font-medium text-foreground mb-2">교환/반품 가능 기간</h4>
+                    <p>상품 수령 후 7일 이내 (단, 상품 포장 및 상품 택이 훼손되지 않아야 함)</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-foreground mb-2">교환/반품 불가 사유</h4>
+                    <ul className="list-disc list-inside space-y-1 ml-2">
+                      <li>상품을 사용하거나 훼손한 경우</li>
+                      <li>상품 택(Tag) 제거, 라벨이 훼손된 경우</li>
+                      <li>세탁하거나 수선한 경우</li>
+                      <li>고객님의 부주의로 상품이 오염/파손된 경우</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-foreground mb-2">교환/반품 비용</h4>
+                    <p>고객 변심: 왕복 배송비 6,000원 고객 부담</p>
+                    <p>상품 하자: 무료 (당사 부담)</p>
+                  </div>
+                </div>
+              </div>
+
+              <Card className="bg-muted/50">
+                <CardContent className="p-4 space-y-2">
+                  <p className="text-sm font-medium">문의 안내</p>
+                  <p className="text-sm text-muted-foreground">
+                    교환/반품 관련 문의: 고객센터 또는 1:1 문의를 이용해주세요.
+                  </p>
+                  <div className="flex gap-2 mt-3">
+                    <Link href="/contact">
+                      <Button variant="outline" size="sm">
+                        고객센터
+                      </Button>
+                    </Link>
+                    <Link href="/contact/inquiry">
+                      <Button variant="outline" size="sm">
+                        1:1 문의
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* 관련 상품 */}
       {relatedProducts.length > 0 && (
         <div className="mt-16">
@@ -328,41 +550,6 @@ export default function ProductDetail({ product, relatedProducts }: ProductDetai
           </div>
         </div>
       )}
-
-      {/* 리뷰 섹션 */}
-      <div className="mt-16 space-y-8">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">상품 리뷰</h2>
-          <Button
-            variant="outline"
-            onClick={() => setShowReviewForm(!showReviewForm)}
-          >
-            {showReviewForm ? '리뷰 작성 취소' : '리뷰 작성하기'}
-          </Button>
-        </div>
-
-        {/* Review Form */}
-        {showReviewForm && (
-          <div className="animate-in slide-in-from-top-5 duration-300">
-            <ReviewForm
-              reviewableType="product"
-              reviewableId={product.id}
-              onSuccess={() => {
-                setShowReviewForm(false);
-                setRefreshReviews((prev) => prev + 1);
-              }}
-              onCancel={() => setShowReviewForm(false)}
-            />
-          </div>
-        )}
-
-        {/* Review List */}
-        <ReviewList
-          key={refreshReviews}
-          reviewableType="product"
-          reviewableId={product.id}
-        />
-      </div>
 
       {/* Recently Viewed Products */}
       <div className="mt-16">

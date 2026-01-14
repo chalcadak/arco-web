@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Package } from 'lucide-react';
+import { OrderListSkeleton } from '@/components/shared/LoadingSkeletons';
 
 interface Order {
   id: string;
@@ -81,9 +82,16 @@ export default function OrdersListPage() {
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        <div className="mb-6">
+          <Link href="/my-page">
+            <Button variant="ghost" size="sm" className="mb-4">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              마이페이지
+            </Button>
+          </Link>
+          <h1 className="text-3xl font-bold mb-6">주문 내역</h1>
         </div>
+        <OrderListSkeleton />
       </div>
     );
   }
