@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
@@ -18,6 +18,8 @@ import {
   Bell,
   Tag,
   MessageSquare,
+  Loader2,
+  ShieldAlert,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -41,6 +43,52 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [userEmail, setUserEmail] = useState<string>('');
+
+  // 인증 및 권한 체크
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    try {
+      const supabase = createClient();
+      
+      // 1. 로그인 여부 확인
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      
+      if (authError || !user) {
+        console.log('Not authenticated, redirecting to login');
+        router.push('/admin/login');
+        return;
+      }
+
+      setUserEmail(user.email || '');
+
+      // 2. 관리자 권한 확인 (users 테이블)
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      if (userError || !userData || userData.role !== 'admin') {
+        console.log('Not admin, redirecting to login');
+        router.push('/admin/login?error=unauthorized');
+        return;
+      }
+
+      // 3. 인증 및 권한 확인 완료
+      setIsAuthorized(true);
+    } catch (error) {
+      console.error('Auth check error:', error);
+      router.push('/admin/login');
+    } finally {
+      setIsCheckingAuth(false);
+    }
+  };
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -55,6 +103,33 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       setIsLoggingOut(false);
     }
   };
+
+  // 로딩 중
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-primary" />
+          <p className="text-neutral-600">인증 확인 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 권한 없음
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <ShieldAlert className="w-16 h-16 mx-auto mb-4 text-red-500" />
+          <h2 className="text-2xl font-bold mb-2">접근 권한이 없습니다</h2>
+          <p className="text-neutral-600 mb-6">
+            관리자 권한이 필요합니다. 로그인 페이지로 이동합니다...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -135,6 +210,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </button>
 
           <div className="flex items-center gap-4 ml-auto">
+            <div className="text-sm text-neutral-600 hidden md:block">
+              {userEmail}
+            </div>
             <Link
               href="/"
               target="_blank"
