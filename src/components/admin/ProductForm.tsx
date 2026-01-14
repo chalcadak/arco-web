@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { FormField } from '@/components/ui/form-field';
+import { FormSection } from '@/components/ui/form-section';
 import {
   Select,
   SelectContent,
@@ -119,137 +119,124 @@ export function ProductForm({ product, isEdit = false }: ProductFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>기본 정보</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">상품명 *</Label>
-            <Input
-              id="name"
-              value={name}
-              onChange={(e) => handleNameChange(e.target.value)}
-              placeholder="클래식 코튼 티셔츠"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="slug">URL 슬러그 *</Label>
-            <Input
-              id="slug"
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              placeholder="classic-cotton-tshirt"
-              required
-            />
-            <p className="text-xs text-muted-foreground">
-              상품 URL에 사용됩니다: /products/{slug || 'slug'}
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">상품 설명</Label>
-            <Textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="상품에 대한 자세한 설명을 입력하세요"
-              rows={4}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="price">가격 (원) *</Label>
-              <Input
-                id="price"
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="35000"
-                required
-                min="0"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="stock">재고 수량 *</Label>
-              <Input
-                id="stock"
-                type="number"
-                value={stockQuantity}
-                onChange={(e) => setStockQuantity(e.target.value)}
-                placeholder="100"
-                required
-                min="0"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="category">카테고리</Label>
-            <Select value={categoryId} onValueChange={setCategoryId}>
-              <SelectTrigger>
-                <SelectValue placeholder="카테고리 선택" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((category) => (
-                  <SelectItem key={category.id} value={category.id}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="isActive">활성화 상태</Label>
-            <Select
-              value={isActive ? 'true' : 'false'}
-              onValueChange={(value) => setIsActive(value === 'true')}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="true">활성화</SelectItem>
-                <SelectItem value="false">비활성화</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* 이미지 업로드 */}
-      <Card>
-        <CardHeader>
-          <CardTitle>상품 이미지</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ImageUpload
-            images={images}
-            onImagesChange={setImages}
-            maxImages={10}
+      {/* 기본 정보 섹션 */}
+      <FormSection
+        title="기본 정보"
+        description="상품의 기본 정보를 입력하세요"
+      >
+        <FormField label="상품명" id="name" required>
+          <Input
+            id="name"
+            value={name}
+            onChange={(e) => handleNameChange(e.target.value)}
+            placeholder="클래식 코튼 티셔츠"
+            required
           />
-        </CardContent>
-      </Card>
+        </FormField>
 
-      {/* 영상 업로드 */}
-      <Card>
-        <CardHeader>
-          <CardTitle>상품 영상</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <VideoUpload
-            video={videoUid}
-            onVideoChange={setVideoUid}
+        <FormField
+          label="URL 슬러그"
+          id="slug"
+          required
+          description={`상품 URL에 사용됩니다: /products/${slug || 'slug'}`}
+        >
+          <Input
+            id="slug"
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+            placeholder="classic-cotton-tshirt"
+            required
           />
-        </CardContent>
-      </Card>
+        </FormField>
 
-      {/* Submit buttons */}
+        <FormField label="상품 설명" id="description">
+          <Textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="상품에 대한 자세한 설명을 입력하세요"
+            rows={4}
+          />
+        </FormField>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField label="가격 (원)" id="price" required>
+            <Input
+              id="price"
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder="35000"
+              required
+              min="0"
+            />
+          </FormField>
+
+          <FormField label="재고 수량" id="stock" required>
+            <Input
+              id="stock"
+              type="number"
+              value={stockQuantity}
+              onChange={(e) => setStockQuantity(e.target.value)}
+              placeholder="100"
+              required
+              min="0"
+            />
+          </FormField>
+        </div>
+
+        <FormField label="카테고리" id="category">
+          <Select value={categoryId} onValueChange={setCategoryId}>
+            <SelectTrigger>
+              <SelectValue placeholder="카테고리 선택" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map((category) => (
+                <SelectItem key={category.id} value={category.id}>
+                  {category.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </FormField>
+
+        <FormField label="활성화 상태" id="isActive">
+          <Select
+            value={isActive ? 'true' : 'false'}
+            onValueChange={(value) => setIsActive(value === 'true')}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="true">활성화</SelectItem>
+              <SelectItem value="false">비활성화</SelectItem>
+            </SelectContent>
+          </Select>
+        </FormField>
+      </FormSection>
+
+      {/* 이미지 업로드 섹션 */}
+      <FormSection
+        title="상품 이미지"
+        description="상품 이미지를 업로드하세요 (최대 10개)"
+      >
+        <ImageUpload
+          images={images}
+          onImagesChange={setImages}
+          maxImages={10}
+        />
+      </FormSection>
+
+      {/* 영상 업로드 섹션 */}
+      <FormSection
+        title="상품 영상"
+        description="상품 소개 영상을 업로드하세요 (선택사항)"
+      >
+        <VideoUpload video={videoUid} onVideoChange={setVideoUid} />
+      </FormSection>
+
+      {/* 제출 버튼 */}
       <div className="flex gap-4">
         <Button
           type="button"

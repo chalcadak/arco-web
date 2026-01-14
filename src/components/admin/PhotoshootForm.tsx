@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { FormField } from '@/components/ui/form-field';
+import { FormSection } from '@/components/ui/form-section';
+import { Text } from '@/components/ui/typography';
 import {
   Select,
   SelectContent,
@@ -141,205 +142,188 @@ export function PhotoshootForm({ photoshoot, isEdit = false }: PhotoshootFormPro
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>기본 정보</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">촬영룩명 *</Label>
-            <Input
-              id="name"
-              value={name}
-              onChange={(e) => handleNameChange(e.target.value)}
-              placeholder="에디토리얼 시크"
-              required
-            />
-          </div>
+      {/* 기본 정보 섹션 */}
+      <FormSection
+        title="기본 정보"
+        description="촬영룩의 기본 정보를 입력하세요"
+      >
+        <FormField label="촬영룩명" id="name" required>
+          <Input
+            id="name"
+            value={name}
+            onChange={(e) => handleNameChange(e.target.value)}
+            placeholder="에디토리얼 시크"
+            required
+          />
+        </FormField>
 
-          <div className="space-y-2">
-            <Label htmlFor="slug">URL 슬러그 *</Label>
-            <Input
-              id="slug"
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              placeholder="editorial-chic"
-              required
-            />
-            <p className="text-xs text-muted-foreground">
-              촬영룩 URL에 사용됩니다: /photoshoots/{slug || 'slug'}
-            </p>
-          </div>
+        <FormField
+          label="URL 슬러그"
+          id="slug"
+          required
+          description={`촬영룩 URL에 사용됩니다: /photoshoots/${slug || 'slug'}`}
+        >
+          <Input
+            id="slug"
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+            placeholder="editorial-chic"
+            required
+          />
+        </FormField>
 
-          <div className="space-y-2">
-            <Label htmlFor="description">촬영룩 설명</Label>
-            <Textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="촬영룩에 대한 자세한 설명을 입력하세요"
-              rows={4}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="price">가격 (원) *</Label>
-              <Input
-                id="price"
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="150000"
-                required
-                min="0"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="duration">촬영 시간 (분) *</Label>
-              <Input
-                id="duration"
-                type="number"
-                value={durationMinutes}
-                onChange={(e) => setDurationMinutes(e.target.value)}
-                placeholder="60"
-                required
-                min="15"
-                step="15"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="category">카테고리</Label>
-            <Select value={categoryId} onValueChange={setCategoryId}>
-              <SelectTrigger>
-                <SelectValue placeholder="카테고리 선택" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((category) => (
-                  <SelectItem key={category.id} value={category.id}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="isActive">활성화 상태</Label>
-            <Select
-              value={isActive ? 'true' : 'false'}
-              onValueChange={(value) => setIsActive(value === 'true')}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="true">활성화</SelectItem>
-                <SelectItem value="false">비활성화</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Included Items */}
-      <Card>
-        <CardHeader>
-          <CardTitle>포함 항목</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex gap-2">
-            <Input
-              value={newItem}
-              onChange={(e) => setNewItem(e.target.value)}
-              placeholder="예: 전문 사진작가"
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleAddItem();
-                }
-              }}
-            />
-            <Button type="button" onClick={handleAddItem}>
-              <Plus className="w-4 h-4" />
-            </Button>
-          </div>
-
-          {includedItems.length > 0 && (
-            <div className="space-y-2">
-              {includedItems.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-3 border rounded-lg"
-                >
-                  <span className="text-sm">{item}</span>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleRemoveItem(index)}
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {includedItems.length === 0 && (
-            <p className="text-sm text-muted-foreground text-center py-4">
-              포함 항목을 추가해주세요
-            </p>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Requirements */}
-      <Card>
-        <CardHeader>
-          <CardTitle>요구사항</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <FormField label="촬영룩 설명" id="description">
           <Textarea
-            value={requirements}
-            onChange={(e) => setRequirements(e.target.value)}
-            placeholder="촬영 시 필요한 준비물이나 주의사항을 입력하세요"
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="촬영룩에 대한 자세한 설명을 입력하세요"
             rows={4}
           />
-        </CardContent>
-      </Card>
+        </FormField>
 
-      {/* 이미지 업로드 */}
-      <Card>
-        <CardHeader>
-          <CardTitle>촬영룩 이미지</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ImageUpload
-            images={images}
-            onImagesChange={setImages}
-            maxImages={10}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField label="가격 (원)" id="price" required>
+            <Input
+              id="price"
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder="150000"
+              required
+              min="0"
+            />
+          </FormField>
+
+          <FormField label="촬영 시간 (분)" id="duration" required>
+            <Input
+              id="duration"
+              type="number"
+              value={durationMinutes}
+              onChange={(e) => setDurationMinutes(e.target.value)}
+              placeholder="60"
+              required
+              min="15"
+              step="15"
+            />
+          </FormField>
+        </div>
+
+        <FormField label="카테고리" id="category">
+          <Select value={categoryId} onValueChange={setCategoryId}>
+            <SelectTrigger>
+              <SelectValue placeholder="카테고리 선택" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map((category) => (
+                <SelectItem key={category.id} value={category.id}>
+                  {category.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </FormField>
+
+        <FormField label="활성화 상태" id="isActive">
+          <Select
+            value={isActive ? 'true' : 'false'}
+            onValueChange={(value) => setIsActive(value === 'true')}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="true">활성화</SelectItem>
+              <SelectItem value="false">비활성화</SelectItem>
+            </SelectContent>
+          </Select>
+        </FormField>
+      </FormSection>
+
+      {/* 포함 항목 섹션 */}
+      <FormSection
+        title="포함 항목"
+        description="촬영룩에 포함되는 서비스 항목을 추가하세요"
+      >
+        <div className="flex gap-2">
+          <Input
+            value={newItem}
+            onChange={(e) => setNewItem(e.target.value)}
+            placeholder="예: 전문 사진작가"
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleAddItem();
+              }
+            }}
           />
-        </CardContent>
-      </Card>
+          <Button type="button" onClick={handleAddItem}>
+            <Plus className="w-4 h-4" />
+          </Button>
+        </div>
 
-      {/* 영상 업로드 */}
-      <Card>
-        <CardHeader>
-          <CardTitle>촬영룩 영상</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <VideoUpload
-            video={videoUid}
-            onVideoChange={setVideoUid}
-          />
-        </CardContent>
-      </Card>
+        {includedItems.length > 0 && (
+          <div className="space-y-2">
+            {includedItems.map((item, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between p-3 border rounded-lg"
+              >
+                <span className="text-sm">{item}</span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleRemoveItem(index)}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
 
-      {/* Submit buttons */}
+        {includedItems.length === 0 && (
+          <Text variant="muted" className="text-center py-4">
+            포함 항목을 추가해주세요
+          </Text>
+        )}
+      </FormSection>
+
+      {/* 요구사항 섹션 */}
+      <FormSection
+        title="요구사항"
+        description="촬영 시 필요한 준비물이나 주의사항을 입력하세요"
+      >
+        <Textarea
+          value={requirements}
+          onChange={(e) => setRequirements(e.target.value)}
+          placeholder="예: 반려견의 목욕 후 방문 권장"
+          rows={4}
+        />
+      </FormSection>
+
+      {/* 이미지 업로드 섹션 */}
+      <FormSection
+        title="촬영룩 이미지"
+        description="촬영룩 이미지를 업로드하세요 (최대 10개)"
+      >
+        <ImageUpload
+          images={images}
+          onImagesChange={setImages}
+          maxImages={10}
+        />
+      </FormSection>
+
+      {/* 영상 업로드 섹션 */}
+      <FormSection
+        title="촬영룩 영상"
+        description="촬영룩 소개 영상을 업로드하세요 (선택사항)"
+      >
+        <VideoUpload video={videoUid} onVideoChange={setVideoUid} />
+      </FormSection>
+
+      {/* 제출 버튼 */}
       <div className="flex gap-4">
         <Button
           type="button"
