@@ -7,19 +7,34 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test:supabase": "tsx test-supabase.mjs",
+    "test:r2": "tsx test-r2.mjs",
+    "test:toss": "tsx test-toss.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.966.0",
+    "@aws-sdk/lib-storage": "^3.966.0",
+    "@aws-sdk/s3-request-presigner": "^3.966.0",
     "@hookform/resolvers": "^5.2.2",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-slot": "^1.2.4",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.90.1",
     "@tanstack/react-query": "^5.90.16",
+    "@tosspayments/payment-widget-sdk": "^0.12.1",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "framer-motion": "^12.26.2",
+    "lucide-react": "^0.562.0",
+    "multer": "^2.0.2",
     "next": "16.1.1",
     "react": "19.2.3",
+    "react-day-picker": "^9.13.0",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.70.0",
+    "sharp": "^0.34.5",
     "tailwind-merge": "^3.4.0",
     "zod": "^4.3.5",
     "zustand": "^5.0.9"
@@ -32,6 +47,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
