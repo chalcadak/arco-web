@@ -1,13 +1,15 @@
 import { Metadata } from 'next';
 import { getDashboardStats } from '@/lib/analytics/dashboard';
+import { getRecommendations } from '@/lib/analytics/recommendations';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Heading, Text } from '@/components/ui/typography';
-import { Calendar, Package, Camera, ShoppingCart, TrendingUp, Users, Star, AlertCircle, MessageSquare, Clock, CalendarDays } from 'lucide-react';
+import { Calendar, Package, Camera, ShoppingCart, TrendingUp, Users, Star, AlertCircle, MessageSquare, Clock, CalendarDays, Lightbulb } from 'lucide-react';
 import Link from 'next/link';
 import { GrowthIndicator } from '@/components/admin/GrowthIndicator';
 import { BestSellersTable } from '@/components/admin/BestSellersTable';
 import { HourlyHeatmap } from '@/components/admin/charts/HourlyHeatmap';
 import { DailyOrdersChart } from '@/components/admin/charts/DailyOrdersChart';
+import { RecommendationList } from '@/components/admin/RecommendationCard';
 
 export const metadata: Metadata = {
   title: '대시보드 - ARCO 관리자',
@@ -16,6 +18,7 @@ export const metadata: Metadata = {
 
 export default async function AdminDashboardPage() {
   const stats = await getDashboardStats();
+  const recommendations = await getRecommendations();
 
   // 기존 getDashboardStats 함수는 src/lib/analytics/dashboard.ts로 이동했습니다.
   // 이제 더 많은 데이터를 포함합니다:
@@ -23,6 +26,10 @@ export default async function AdminDashboardPage() {
   // - 베스트셀러 TOP 10
   // - 시간대별/요일별 주문 분포
   // - 재구매율, 활성 고객 수 등
+  //
+  // 🆕 AI 추천 액션 시스템 추가:
+  // - 데이터 기반 즉시 실행 가능한 액션 추천
+  // - 재고 부족, 프로모션, 고객 리텐션 등
 
 
 
@@ -287,6 +294,31 @@ export default async function AdminDashboardPage() {
                 ))}
               </div>
             )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* 🆕 AI 추천 액션 시스템 */}
+      <div className="mt-8">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Lightbulb className="h-5 w-5 text-yellow-600" />
+              <CardTitle>💡 AI 추천: 즉시 실행 가능한 액션</CardTitle>
+            </div>
+            <Text size="sm" className="text-muted-foreground">
+              데이터 기반 매출 증대 방법
+            </Text>
+          </CardHeader>
+          <CardContent>
+            <RecommendationList 
+              recommendations={recommendations}
+              onExecuteAction={async (action) => {
+                'use server';
+                // TODO: 실제 API 호출 구현
+                console.log('Executing action:', action);
+              }}
+            />
           </CardContent>
         </Card>
       </div>
