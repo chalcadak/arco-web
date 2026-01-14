@@ -17,6 +17,7 @@ import {
   Star,
   Bell,
   Tag,
+  MessageSquare,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -31,6 +32,7 @@ const navigation = [
   { name: '예약 관리', href: '/admin/bookings', icon: Calendar },
   { name: '리뷰 관리', href: '/admin/reviews', icon: Star },
   { name: '쿠폰 관리', href: '/admin/coupons', icon: Tag },
+  { name: '1:1 문의', href: '/admin/inquiries', icon: MessageSquare },
   { name: '재입고 알림', href: '/admin/stock-notifications', icon: Bell },
 ];
 
