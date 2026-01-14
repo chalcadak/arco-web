@@ -13,7 +13,7 @@ interface PaymentButtonProps {
   customerEmail?: string;
   customerPhone?: string;
   items?: any[];
-  shippingAddress?: string;
+  shippingAddress?: any;
   onSuccess?: () => void;
 }
 
@@ -40,16 +40,23 @@ export function PaymentButton({
     try {
       const tossPayments = await loadTossPayments(PAYMENT_CONFIG.clientKey);
 
-      // Generate unique order ID
+      // Generate unique order ID (browser-safe)
       const timestamp = Date.now();
-      const orderData = {
-        customerName,
-        customerEmail,
-        customerPhone,
-        items,
-        shippingAddress,
-      };
-      const orderId = `ORDER-${timestamp}-${Buffer.from(JSON.stringify(orderData)).toString('base64')}`;
+      const random = Math.random().toString(36).substring(2, 15);
+      const orderId = `ORDER-${timestamp}-${random}`;
+      
+      // Store order data temporarily (will be created after payment confirmation)
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem(`order-${orderId}`, JSON.stringify({
+          customerName,
+          customerEmail,
+          customerPhone,
+          items,
+          shippingAddress,
+          amount,
+          timestamp,
+        }));
+      }
 
       await tossPayments.requestPayment('카드', {
         amount,

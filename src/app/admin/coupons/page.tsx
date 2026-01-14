@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/lib/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,7 +10,7 @@ import { Plus, Edit, Trash2, Copy } from 'lucide-react';
 import type { Coupon } from '@/types/coupon';
 
 export default function AdminCouponsPage() {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -202,7 +202,7 @@ function CouponForm({
   onClose: () => void;
   onSave: () => void;
 }) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     code: coupon?.code || '',

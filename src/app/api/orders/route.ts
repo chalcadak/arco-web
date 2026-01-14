@@ -35,9 +35,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Create order
+    const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
+    
     const { data: order, error } = await supabase
       .from('orders')
       .insert({
+        order_number: orderNumber,
         customer_name,
         customer_email,
         customer_phone,

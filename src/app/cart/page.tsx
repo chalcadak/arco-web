@@ -9,7 +9,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Container } from '@/components/ui/container';
 import { Heading, Text } from '@/components/ui/typography';
 import { CouponInput } from '@/components/shared/CouponInput';
-import { PaymentButton } from '@/components/payment/PaymentButton';
 import { Minus, Plus, X } from 'lucide-react';
 import type { CouponValidation } from '@/types/coupon';
 
@@ -222,14 +221,11 @@ export default function CartPage() {
                     </div>
                   </div>
 
-                  <PaymentButton
-                    amount={finalPrice}
-                    orderName={`${items[0]?.name || '상품'} 외 ${items.length - 1}건`}
-                    items={items}
-                    onSuccess={() => {
-                      clearCart();
-                    }}
-                  />
+                  <Link href="/checkout" className="block">
+                    <Button size="lg" className="w-full">
+                      {finalPrice.toLocaleString()}원 결제하기
+                    </Button>
+                  </Link>
 
                   <Link href="/products">
                     <Button variant="outline" size="lg" className="w-full">

@@ -27,26 +27,28 @@ export async function POST(request: NextRequest) {
 
     const payment = await response.json();
 
-    // Create order in database
+    // Get order data from session storage (sent from client)
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
     
-    // Parse order data from orderId (format: ORDER-timestamp-data)
-    const orderData = JSON.parse(Buffer.from(orderId.split('-')[2] || '{}', 'base64').toString());
+    // Generate order number
+    const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
 
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .insert([
         {
-          id: payment.orderId,
-          customer_name: orderData.customerName || '고객',
-          customer_email: orderData.customerEmail || '',
-          customer_phone: orderData.customerPhone || '',
+          order_number: orderNumber,
+          user_id: user?.id || null,
+          customer_name: payment.customerName || '고객',
+          customer_email: payment.customerEmail || '',
+          customer_phone: payment.customerMobilePhone || '',
           total_amount: payment.totalAmount,
           status: 'pending',
           payment_method: payment.method,
           payment_key: payment.paymentKey,
-          items: orderData.items || [],
-          shipping_address: orderData.shippingAddress || '',
+          items: [],
+          shipping_address: {},
         },
       ])
       .select()

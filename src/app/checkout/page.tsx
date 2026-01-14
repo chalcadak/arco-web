@@ -14,6 +14,7 @@ import { Heading, Text } from '@/components/ui/typography';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { PaymentButton } from '@/components/payment/PaymentButton';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -47,73 +48,10 @@ export default function CheckoutPage() {
       return;
     }
 
-    setIsLoading(true);
-
-    try {
-      // Create order
-      const orderData = {
-        customer_name: customerName,
-        customer_email: customerEmail,
-        customer_phone: customerPhone,
-        shipping_address: shippingAddress,
-        shipping_zipcode: shippingZipcode,
-        shipping_request: shippingRequest,
-        items: items.map(item => ({
-          product_id: item.id,
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity,
-          size: item.selectedSize,
-          color: item.selectedColor,
-        })),
-        subtotal,
-        shipping_fee: shippingFee,
-        total_amount: totalAmount,
-      };
-
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData),
-      });
-
-      if (!response.ok) {
-        throw new Error('주문 생성 실패');
-      }
-
-      const { order } = await response.json();
-
-      // Redirect to Toss Payments
-      const tossResponse = await fetch('/api/payments/toss', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          orderId: order.id,
-          orderNumber: order.order_number,
-          amount: totalAmount,
-          orderName: `${items[0].name} 외 ${items.length - 1}건`,
-          customerName,
-          customerEmail,
-        }),
-      });
-
-      if (!tossResponse.ok) {
-        throw new Error('결제 요청 실패');
-      }
-
-      const { paymentUrl } = await tossResponse.json();
-
-      // Clear cart and redirect
-      clearCart();
-      window.location.href = paymentUrl;
-    } catch (error) {
-      console.error('Checkout error:', error);
-      alert('주문 처리 중 오류가 발생했습니다.');
-      setIsLoading(false);
+    // Trigger payment - data will be saved after payment confirmation
+    const paymentButton = document.querySelector('[data-payment-button]') as HTMLButtonElement;
+    if (paymentButton) {
+      paymentButton.click();
     }
   };
 
@@ -222,21 +160,32 @@ export default function CheckoutPage() {
 
             {/* Submit button - mobile */}
             <div className="lg:hidden">
-              <Button
-                type="submit"
-                size="lg"
-                className="w-full"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    처리 중...
-                  </>
-                ) : (
-                  `₩${totalAmount.toLocaleString()} 결제하기`
-                )}
-              </Button>
+              <PaymentButton
+                amount={totalAmount}
+                orderName={`${items[0]?.name || '상품'} 외 ${items.length - 1}건`}
+                customerName={customerName}
+                customerEmail={customerEmail}
+                customerPhone={customerPhone}
+                items={items.map(item => ({
+                  productId: item.productId,
+                  name: item.name,
+                  price: item.price,
+                  quantity: item.quantity,
+                  size: item.size,
+                  color: item.color,
+                  image: item.image,
+                }))}
+                shippingAddress={{
+                  name: customerName,
+                  phone: customerPhone,
+                  address: shippingAddress,
+                  postal_code: shippingZipcode,
+                  detail_address: shippingRequest,
+                }}
+                onSuccess={() => {
+                  clearCart();
+                }}
+              />
             </div>
           </form>
         </div>
@@ -301,28 +250,33 @@ export default function CheckoutPage() {
 
               {/* Submit button - desktop */}
               <div className="hidden lg:block">
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="w-full"
-                  disabled={isLoading}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const form = document.querySelector('form');
-                    if (form) {
-                      form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-                    }
+                <div data-payment-button style={{ display: 'none' }} />
+                <PaymentButton
+                  amount={totalAmount}
+                  orderName={`${items[0]?.name || '상품'} 외 ${items.length - 1}건`}
+                  customerName={customerName}
+                  customerEmail={customerEmail}
+                  customerPhone={customerPhone}
+                  items={items.map(item => ({
+                    productId: item.productId,
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity,
+                    size: item.size,
+                    color: item.color,
+                    image: item.image,
+                  }))}
+                  shippingAddress={{
+                    name: customerName,
+                    phone: customerPhone,
+                    address: shippingAddress,
+                    postal_code: shippingZipcode,
+                    detail_address: shippingRequest,
                   }}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      처리 중...
-                    </>
-                  ) : (
-                    `₩${totalAmount.toLocaleString()} 결제하기`
-                  )}
-                </Button>
+                  onSuccess={() => {
+                    clearCart();
+                  }}
+                />
               </div>
             </CardContent>
           </Card>
