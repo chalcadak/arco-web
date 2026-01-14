@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { WishlistButton } from '@/components/shared/WishlistButton';
+import SearchBar from '@/components/shared/SearchBar';
+import FilterPanel, { FilterOptions } from '@/components/shared/FilterPanel';
 
 interface Category {
   id: number;
@@ -22,60 +24,174 @@ interface PhotoshootListProps {
 }
 
 export default function PhotoshootList({ initialLooks, categories }: PhotoshootListProps) {
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filters, setFilters] = useState<FilterOptions>({
+    categories: [],
+    priceRange: { min: 0, max: 1000000 },
+    tags: [],
+    sortBy: 'newest',
+  });
+  const [showFilters, setShowFilters] = useState(false);
 
-  // 카테고리 필터링
-  const filteredLooks = useMemo(() => {
-    if (!selectedCategory) return initialLooks;
-    return initialLooks.filter(
-      (look) => look.category_id === selectedCategory
+  // Apply search and filters
+  const filteredAndSortedLooks = useMemo(() => {
+    let result = [...initialLooks];
+
+    // Search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (look) =>
+          look.name.toLowerCase().includes(query) ||
+          look.description?.toLowerCase().includes(query)
+      );
+    }
+
+    // Category filter
+    if (filters.categories.length > 0) {
+      result = result.filter((look) =>
+        filters.categories.some((cat) => cat.id === look.category_id)
+      );
+    }
+
+    // Price range filter
+    result = result.filter(
+      (look) =>
+        look.price >= filters.priceRange.min &&
+        look.price <= filters.priceRange.max
     );
-  }, [initialLooks, selectedCategory]);
+
+    // Tags filter
+    if (filters.tags.length > 0) {
+      result = result.filter((look) =>
+        filters.tags.some((tag) => look.tags?.includes(tag))
+      );
+    }
+
+    // Sort
+    switch (filters.sortBy) {
+      case 'newest':
+        result.sort((a, b) => b.id - a.id);
+        break;
+      case 'popular':
+        result.sort((a, b) => {
+          const aPopular = a.tags?.includes('인기') ? 1 : 0;
+          const bPopular = b.tags?.includes('인기') ? 1 : 0;
+          return bPopular - aPopular;
+        });
+        break;
+      case 'price_asc':
+        result.sort((a, b) => a.price - b.price);
+        break;
+      case 'price_desc':
+        result.sort((a, b) => b.price - a.price);
+        break;
+      case 'name':
+        result.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+        break;
+    }
+
+    return result;
+  }, [initialLooks, searchQuery, filters]);
 
   return (
-    <div>
-      {/* 카테고리 필터 */}
-      <div className="mb-8">
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant={selectedCategory === null ? 'default' : 'outline'}
-            onClick={() => setSelectedCategory(null)}
-            size="sm"
-          >
-            전체
-          </Button>
-          {categories.map((category) => (
+    <div className="space-y-6">
+      {/* Search Bar */}
+      <SearchBar
+        value={searchQuery}
+        onChange={setSearchQuery}
+        placeholder="촬영룩 검색..."
+      />
+
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Filter Panel - Desktop Sidebar */}
+        <div className="hidden lg:block w-64 flex-shrink-0">
+          <div className="sticky top-24">
+            <FilterPanel
+              filters={filters}
+              onFilterChange={setFilters}
+              availableCategories={categories}
+              availableTags={['신규', '인기', '추천', '베스트']}
+            />
+          </div>
+        </div>
+
+        {/* Photoshoots */}
+        <div className="flex-1">
+          {/* Mobile Filter Toggle */}
+          <div className="lg:hidden mb-4">
             <Button
-              key={category.id}
-              variant={selectedCategory === category.id ? 'default' : 'outline'}
-              onClick={() => setSelectedCategory(category.id)}
-              size="sm"
+              variant="outline"
+              onClick={() => setShowFilters(!showFilters)}
+              className="w-full"
             >
-              {category.name}
+              {showFilters ? '필터 숨기기' : '필터 표시'}
             </Button>
-          ))}
+          </div>
+
+          {/* Mobile Filter Panel */}
+          {showFilters && (
+            <div className="lg:hidden mb-6">
+              <FilterPanel
+                filters={filters}
+                onFilterChange={setFilters}
+                availableCategories={categories}
+                availableTags={['신규', '인기', '추천', '베스트']}
+              />
+            </div>
+          )}
+
+          {/* Results Count */}
+          <div className="mb-6 flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              총{' '}
+              <span className="font-semibold text-foreground">
+                {filteredAndSortedLooks.length}
+              </span>
+              개의 촬영룩
+            </p>
+
+            {searchQuery && (
+              <p className="text-sm text-gray-500">
+                '<span className="font-semibold">{searchQuery}</span>' 검색 결과
+              </p>
+            )}
+          </div>
+
+          {/* Photoshoot Grid */}
+          {filteredAndSortedLooks.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground mb-2">
+                {searchQuery
+                  ? '검색 결과가 없습니다.'
+                  : '촬영룩이 없습니다.'}
+              </p>
+              {searchQuery && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setFilters({
+                      categories: [],
+                      priceRange: { min: 0, max: 1000000 },
+                      tags: [],
+                      sortBy: 'newest',
+                    });
+                  }}
+                >
+                  필터 초기화
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredAndSortedLooks.map((look) => (
+                <PhotoshootCard key={look.id} look={look} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
-
-      {/* 촬영룩 개수 */}
-      <div className="mb-6">
-        <p className="text-sm text-muted-foreground">
-          총 <span className="font-semibold text-foreground">{filteredLooks.length}</span>개의 촬영룩
-        </p>
-      </div>
-
-      {/* 촬영룩 그리드 */}
-      {filteredLooks.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">촬영룩이 없습니다.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredLooks.map((look) => (
-            <PhotoshootCard key={look.id} look={look} />
-          ))}
-        </div>
-      )}
     </div>
   );
 }
@@ -98,10 +214,10 @@ function PhotoshootCard({ look }: PhotoshootCardProps) {
             alt={look.name}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         </Link>
-        
+
         {/* 뱃지 */}
         <div className="absolute top-3 left-3 flex gap-2">
           {isNew && <Badge variant="default">신규</Badge>}
@@ -135,7 +251,7 @@ function PhotoshootCard({ look }: PhotoshootCardProps) {
           <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-primary transition-colors">
             {look.name}
           </h3>
-          
+
           <div className="flex items-baseline gap-2 mb-2">
             <span className="text-lg font-bold">
               {look.price.toLocaleString()}원
