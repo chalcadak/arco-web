@@ -2,12 +2,17 @@
  * Button Component
  * 
  * design-system.ts를 기반으로 한 재사용 가능한 버튼 컴포넌트
+ * Framer Motion으로 hover/tap 애니메이션 추가
  * 
  * @example
  * <Button variant="primary" size="lg">클릭</Button>
  */
 
+'use client';
+
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/design-system';
+import { buttonHover, buttonTap } from '@/lib/animations';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
@@ -22,10 +27,13 @@ export function Button({
   size = 'md',
   children,
   className,
+  disabled,
   ...props 
 }: ButtonProps) {
   return (
-    <button
+    <motion.button
+      whileHover={!disabled ? buttonHover : undefined}
+      whileTap={!disabled ? buttonTap : undefined}
       className={cn(
         // Base styles
         'inline-flex items-center justify-center',
@@ -51,6 +59,6 @@ export function Button({
       {...props}
     >
       {children}
-    </button>
+    </motion.button>
   );
 }

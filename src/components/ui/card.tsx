@@ -2,19 +2,28 @@
  * Card Component
  * 
  * design-system.ts를 기반으로 한 재사용 가능한 카드 컴포넌트
+ * Framer Motion으로 hover 애니메이션 추가
  */
 
+'use client';
+
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/design-system';
+import { cardHover } from '@/lib/animations';
 
 interface CardProps {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
+  animate?: boolean;
 }
 
-export function Card({ children, className, hover = true }: CardProps) {
+export function Card({ children, className, hover = true, animate = true }: CardProps) {
+  const Component = animate ? motion.div : 'div';
+  
   return (
-    <div
+    <Component
+      {...(animate && hover ? { whileHover: cardHover } : {})}
       className={cn(
         'bg-white',
         'border border-neutral-200',
@@ -25,7 +34,7 @@ export function Card({ children, className, hover = true }: CardProps) {
       )}
     >
       {children}
-    </div>
+    </Component>
   );
 }
 
