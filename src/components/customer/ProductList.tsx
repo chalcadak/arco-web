@@ -7,6 +7,7 @@ import { Product } from '@/types/product';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { WishlistButton } from '@/components/shared/WishlistButton';
 
 interface Category {
   id: number;
@@ -89,9 +90,9 @@ function ProductCard({ product }: ProductCardProps) {
   const isBestseller = product.tags?.includes('베스트셀러');
 
   return (
-    <Link href={`/products/${product.slug}`}>
-      <Card className="group overflow-hidden hover:shadow-lg transition-shadow duration-300">
-        <div className="relative aspect-square overflow-hidden bg-neutral-100">
+    <Card className="group overflow-hidden hover:shadow-lg transition-shadow duration-300 relative">
+      <div className="relative aspect-square overflow-hidden bg-neutral-100">
+        <Link href={`/products/${product.slug}`}>
           <Image
             src={mainImage}
             alt={product.name}
@@ -99,23 +100,39 @@ function ProductCard({ product }: ProductCardProps) {
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           />
-          
-          {/* 뱃지 */}
-          <div className="absolute top-3 left-3 flex gap-2">
-            {isNew && <Badge variant="default">신상품</Badge>}
-            {isBestseller && <Badge variant="secondary">베스트</Badge>}
-          </div>
-
-          {/* 품절 오버레이 */}
-          {product.stock_quantity === 0 && (
-            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-              <Badge variant="destructive" className="text-lg px-4 py-2">
-                품절
-              </Badge>
-            </div>
-          )}
+        </Link>
+        
+        {/* 뱃지 */}
+        <div className="absolute top-3 left-3 flex gap-2">
+          {isNew && <Badge variant="default">신상품</Badge>}
+          {isBestseller && <Badge variant="secondary">베스트</Badge>}
         </div>
 
+        {/* Wishlist Button */}
+        <div className="absolute top-3 right-3 bg-white rounded-full shadow-md">
+          <WishlistButton
+            item={{
+              id: product.id,
+              type: 'product',
+              name: product.name,
+              slug: product.slug,
+              price: product.price,
+              images: product.images || [],
+            }}
+          />
+        </div>
+
+        {/* 품절 오버레이 */}
+        {product.stock_quantity === 0 && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+            <Badge variant="destructive" className="text-lg px-4 py-2">
+              품절
+            </Badge>
+          </div>
+        )}
+      </div>
+
+      <Link href={`/products/${product.slug}`}>
         <CardContent className="p-4">
           <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-primary transition-colors">
             {product.name}
@@ -146,8 +163,8 @@ function ProductCard({ product }: ProductCardProps) {
             </div>
           )}
         </CardContent>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   );
 }
 

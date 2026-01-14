@@ -7,6 +7,7 @@ import { PhotoshootLook } from '@/types/product';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { WishlistButton } from '@/components/shared/WishlistButton';
 
 interface Category {
   id: number;
@@ -89,9 +90,9 @@ function PhotoshootCard({ look }: PhotoshootCardProps) {
   const isPopular = look.tags?.includes('인기');
 
   return (
-    <Link href={`/photoshoots/${look.slug}`}>
-      <Card className="group overflow-hidden hover:shadow-lg transition-shadow duration-300">
-        <div className="relative aspect-square overflow-hidden bg-neutral-100">
+    <Card className="group overflow-hidden hover:shadow-lg transition-shadow duration-300 relative">
+      <div className="relative aspect-square overflow-hidden bg-neutral-100">
+        <Link href={`/photoshoots/${look.slug}`}>
           <Image
             src={mainImage}
             alt={look.name}
@@ -99,21 +100,37 @@ function PhotoshootCard({ look }: PhotoshootCardProps) {
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           />
-          
-          {/* 뱃지 */}
-          <div className="absolute top-3 left-3 flex gap-2">
-            {isNew && <Badge variant="default">신규</Badge>}
-            {isPopular && <Badge variant="secondary">인기</Badge>}
-          </div>
-
-          {/* 촬영 시간 표시 */}
-          <div className="absolute bottom-3 right-3">
-            <Badge variant="outline" className="bg-white/90">
-              {look.duration_minutes}분
-            </Badge>
-          </div>
+        </Link>
+        
+        {/* 뱃지 */}
+        <div className="absolute top-3 left-3 flex gap-2">
+          {isNew && <Badge variant="default">신규</Badge>}
+          {isPopular && <Badge variant="secondary">인기</Badge>}
         </div>
 
+        {/* Wishlist Button */}
+        <div className="absolute top-3 right-3 bg-white rounded-full shadow-md">
+          <WishlistButton
+            item={{
+              id: look.id,
+              type: 'photoshoot',
+              name: look.name,
+              slug: look.slug,
+              price: look.price,
+              images: look.images || [],
+            }}
+          />
+        </div>
+
+        {/* 촬영 시간 표시 */}
+        <div className="absolute bottom-3 right-3">
+          <Badge variant="outline" className="bg-white/90">
+            {look.duration_minutes}분
+          </Badge>
+        </div>
+      </div>
+
+      <Link href={`/photoshoots/${look.slug}`}>
         <CardContent className="p-4">
           <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-primary transition-colors">
             {look.name}
@@ -132,7 +149,7 @@ function PhotoshootCard({ look }: PhotoshootCardProps) {
             </p>
           )}
         </CardContent>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   );
 }
