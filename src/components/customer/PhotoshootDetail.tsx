@@ -1,12 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { PhotoshootLook } from '@/types/product';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import ReviewForm from '@/components/shared/ReviewForm';
+import ReviewList from '@/components/shared/ReviewList';
+import { RecentlyViewed, addToRecentlyViewed } from '@/components/shared/RecentlyViewed';
+import { ShareButton } from '@/components/shared/ShareButton';
 
 interface PhotoshootDetailProps {
   look: PhotoshootLook;
@@ -15,6 +19,18 @@ interface PhotoshootDetailProps {
 
 export default function PhotoshootDetail({ look, relatedLooks }: PhotoshootDetailProps) {
   const [selectedImage, setSelectedImage] = useState(0);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [refreshReviews, setRefreshReviews] = useState(0);
+
+  // Add look to recently viewed on mount (convert to Product type)
+  useEffect(() => {
+    const productLike = {
+      ...look,
+      price: look.price,
+      stock_quantity: 999, // Photoshoots don't have stock
+    } as any;
+    addToRecentlyViewed(productLike);
+  }, [look]);
 
   const images = look.images && look.images.length > 0 
     ? look.images 
@@ -85,9 +101,15 @@ export default function PhotoshootDetail({ look, relatedLooks }: PhotoshootDetai
 
           {/* 촬영룩명 */}
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">
-              {look.name}
-            </h1>
+            <div className="flex items-start justify-between gap-4 mb-2">
+              <h1 className="text-3xl md:text-4xl font-bold flex-1">
+                {look.name}
+              </h1>
+              <ShareButton
+                title={look.name}
+                description={look.description || `${look.name} - ARCO 프리미엄 반려견 촬영`}
+              />
+            </div>
             <div className="flex items-baseline gap-3">
               <span className="text-2xl font-bold text-primary">
                 {look.price.toLocaleString()}원
@@ -214,6 +236,46 @@ export default function PhotoshootDetail({ look, relatedLooks }: PhotoshootDetai
           </div>
         </div>
       )}
+
+      {/* 리뷰 섹션 */}
+      <div className="mt-16 space-y-8">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold">촬영 리뷰</h2>
+          <Button
+            variant="outline"
+            onClick={() => setShowReviewForm(!showReviewForm)}
+          >
+            {showReviewForm ? '리뷰 작성 취소' : '리뷰 작성하기'}
+          </Button>
+        </div>
+
+        {/* Review Form */}
+        {showReviewForm && (
+          <div className="animate-in slide-in-from-top-5 duration-300">
+            <ReviewForm
+              reviewableType="photoshoot"
+              reviewableId={look.id}
+              onSuccess={() => {
+                setShowReviewForm(false);
+                setRefreshReviews((prev) => prev + 1);
+              }}
+              onCancel={() => setShowReviewForm(false)}
+            />
+          </div>
+        )}
+
+        {/* Review List */}
+        <ReviewList
+          key={refreshReviews}
+          reviewableType="photoshoot"
+          reviewableId={look.id}
+        />
+      </div>
+
+      {/* Recently Viewed Products */}
+      <div className="mt-16">
+        <RecentlyViewed />
+      </div>
     </div>
   );
 }

@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ShoppingCart } from 'lucide-react';
+import { Menu, X, ShoppingCart, Heart, User } from 'lucide-react';
 import { useCartStore } from '@/stores/cartStore';
+import { useWishlistStore } from '@/stores/wishlistStore';
 import { Button } from '@/components/ui/button';
 
 const menuItems = [
@@ -19,6 +20,7 @@ export function Header() {
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const totalItems = useCartStore((state) => state.getTotalItems());
+  const wishlistTotal = useWishlistStore((state) => state.getTotalItems());
 
   // 클라이언트에서만 렌더링되도록 설정
   useEffect(() => {
@@ -60,6 +62,20 @@ export function Header() {
 
         {/* Right side actions */}
         <div className="flex items-center space-x-4">
+          {/* Wishlist */}
+          <Link
+            href="/wishlist"
+            className="text-sm font-medium transition-colors hover:text-primary relative"
+          >
+            <span className="hidden md:inline">위시리스트</span>
+            <Heart className="md:hidden h-5 w-5" />
+            {mounted && wishlistTotal > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {wishlistTotal}
+              </span>
+            )}
+          </Link>
+
           {/* Cart */}
           <Link
             href="/cart"
@@ -72,6 +88,14 @@ export function Header() {
                 {totalItems}
               </span>
             )}
+          </Link>
+
+          {/* MyPage (Desktop only) */}
+          <Link
+            href="/my-page"
+            className="hidden md:block text-sm font-medium transition-colors hover:text-primary"
+          >
+            마이페이지
           </Link>
 
           {/* Login (Desktop only) */}
@@ -147,6 +171,20 @@ export function Header() {
                   transition={{ delay: menuItems.length * 0.05 }}
                 >
                   <Link
+                    href="/my-page"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block text-base font-medium py-2 px-3 rounded-md hover:bg-accent transition-colors"
+                  >
+                    마이페이지
+                  </Link>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: (menuItems.length + 1) * 0.05 }}
+                >
+                  <Link
                     href="/login"
                     onClick={() => setMobileMenuOpen(false)}
                     className="block text-base font-medium py-2 px-3 rounded-md hover:bg-accent transition-colors"
@@ -158,7 +196,26 @@ export function Header() {
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: (menuItems.length + 1) * 0.05 }}
+                  transition={{ delay: (menuItems.length + 2) * 0.05 }}
+                >
+                  <Link
+                    href="/wishlist"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center justify-between text-base font-medium py-2 px-3 rounded-md hover:bg-accent transition-colors"
+                  >
+                    <span>위시리스트</span>
+                    {mounted && wishlistTotal > 0 && (
+                      <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                        {wishlistTotal}
+                      </span>
+                    )}
+                  </Link>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: (menuItems.length + 2) * 0.05 }}
                 >
                   <Link
                     href="/cart"
