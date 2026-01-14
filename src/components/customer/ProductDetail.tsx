@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -12,6 +12,8 @@ import { useCartStore } from '@/stores/cartStore';
 import ReviewForm from '@/components/shared/ReviewForm';
 import ReviewList from '@/components/shared/ReviewList';
 import StockNotificationModal from '@/components/shared/StockNotificationModal';
+import { RecentlyViewed, addToRecentlyViewed } from '@/components/shared/RecentlyViewed';
+import { ShareButton } from '@/components/shared/ShareButton';
 
 interface ProductDetailProps {
   product: Product;
@@ -29,6 +31,11 @@ export default function ProductDetail({ product, relatedProducts }: ProductDetai
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [refreshReviews, setRefreshReviews] = useState(0);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+
+  // Add product to recently viewed on mount
+  useEffect(() => {
+    addToRecentlyViewed(product);
+  }, [product]);
 
   const images = product.images && product.images.length > 0 
     ? product.images 
@@ -134,9 +141,15 @@ export default function ProductDetail({ product, relatedProducts }: ProductDetai
 
           {/* 상품명 */}
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">
-              {product.name}
-            </h1>
+            <div className="flex items-start justify-between gap-4 mb-2">
+              <h1 className="text-3xl md:text-4xl font-bold flex-1">
+                {product.name}
+              </h1>
+              <ShareButton
+                title={product.name}
+                description={product.description || `${product.name} - ARCO 프리미엄 반려견 의류`}
+              />
+            </div>
             <p className="text-2xl font-bold text-primary">
               {product.price.toLocaleString()}원
             </p>
@@ -349,6 +362,11 @@ export default function ProductDetail({ product, relatedProducts }: ProductDetai
           reviewableType="product"
           reviewableId={product.id}
         />
+      </div>
+
+      {/* Recently Viewed Products */}
+      <div className="mt-16">
+        <RecentlyViewed />
       </div>
 
       {/* Stock Notification Modal */}
