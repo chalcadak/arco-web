@@ -33,11 +33,29 @@ export default function PaymentSuccessPage() {
         throw new Error('결제 정보가 올바르지 않습니다.');
       }
 
-      // Verify payment with TossPayments (서버에서 처리 필요, 지금은 클라이언트에서 간단히)
+      // Get order data from sessionStorage
+      let orderData = null;
+      if (typeof window !== 'undefined') {
+        const storedData = sessionStorage.getItem('pending-order');
+        if (storedData) {
+          try {
+            orderData = JSON.parse(storedData);
+          } catch (e) {
+            console.error('Failed to parse order data:', e);
+          }
+        }
+      }
+
+      // Verify payment with TossPayments
       const response = await fetch('/api/payment/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ paymentKey, orderId, amount }),
+        body: JSON.stringify({ 
+          paymentKey, 
+          orderId, 
+          amount,
+          orderData, // Pass order data to API
+        }),
       });
 
       if (!response.ok) {
@@ -45,7 +63,14 @@ export default function PaymentSuccessPage() {
       }
 
       const data = await response.json();
-      setOrderId(data.orderId);
+      setOrderId(data.orderNumber || data.orderId);
+      
+      // Clear sessionStorage after successful order creation
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('pending-order');
+        sessionStorage.removeItem('pending-order-id');
+      }
+      
       setIsProcessing(false);
 
     } catch (err: any) {

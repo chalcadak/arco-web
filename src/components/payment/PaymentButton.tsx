@@ -35,6 +35,17 @@ export function PaymentButton({
       return;
     }
 
+    // Validate required fields
+    if (!customerName || !customerEmail) {
+      alert('고객 정보를 입력해주세요.');
+      return;
+    }
+
+    if (!shippingAddress || typeof shippingAddress !== 'object') {
+      alert('배송지 정보를 입력해주세요.');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -45,17 +56,21 @@ export function PaymentButton({
       const random = Math.random().toString(36).substring(2, 15);
       const orderId = `ORDER-${timestamp}-${random}`;
       
-      // Store order data temporarily (will be created after payment confirmation)
+      // Store order data in sessionStorage (will be used after payment confirmation)
+      const orderData = {
+        customerName,
+        customerEmail,
+        customerPhone,
+        items,
+        shippingAddress,
+        amount,
+        orderName,
+        timestamp,
+      };
+      
       if (typeof window !== 'undefined') {
-        sessionStorage.setItem(`order-${orderId}`, JSON.stringify({
-          customerName,
-          customerEmail,
-          customerPhone,
-          items,
-          shippingAddress,
-          amount,
-          timestamp,
-        }));
+        sessionStorage.setItem('pending-order', JSON.stringify(orderData));
+        sessionStorage.setItem('pending-order-id', orderId);
       }
 
       await tossPayments.requestPayment('카드', {
