@@ -233,7 +233,7 @@ DROP POLICY IF EXISTS policy_name ON table_name;
 
 ### **배포 전**
 1. ✅ 로컬 Docker로 전체 마이그레이션 테스트
-2. ✅ 테스트 DB에 적용 (`acro-db-test`)
+2. ✅ 테스트 DB에 적용 (`arco-db-test`)
 3. ✅ 통합 테스트 실행
 
 ### **운영 배포**

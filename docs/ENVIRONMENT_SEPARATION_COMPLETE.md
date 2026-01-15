@@ -243,24 +243,24 @@ function UploadForm() {
 
 ### Production (운영)
 ```
-- Supabase DB: acro-db-prod
-- R2 Bucket: acro-store-prod
+- Supabase DB: arco-db-prod
+- R2 Bucket: arco-store-prod
 - Stream: 운영용 API 키
 - Domain: https://arco.kr
 ```
 
 ### Development (개발/테스트)
 ```
-- Supabase DB: acro-db-test
-- R2 Bucket: acro-store-test
+- Supabase DB: arco-db-test
+- R2 Bucket: arco-store-test
 - Stream: 테스트용 API 키
 - Domain: http://localhost:3000
 ```
 
 ### Preview (Vercel)
 ```
-- Supabase DB: acro-db-test (개발 환경과 동일)
-- R2 Bucket: acro-store-test
+- Supabase DB: arco-db-test (개발 환경과 동일)
+- R2 Bucket: arco-store-test
 - Stream: 테스트용 API 키
 - Domain: https://preview-xxx.vercel.app
 ```
@@ -289,8 +289,8 @@ const supabaseUrl = env.supabase.url;
 const result = await uploadMedia({ file, fileName, mimeType });
 
 // ✅ 환경별 자동 분리
-// Development → acro-store-test
-// Production → acro-store-prod
+// Development → arco-store-test
+// Production → arco-store-prod
 
 // ✅ 완전한 타입 안전성
 ```
@@ -328,10 +328,10 @@ const result = await uploadMedia({ file, fileName, mimeType });
 - [x] 완료 보고서
 
 ### 테스트 준비
-- [ ] Supabase acro-db-test 생성 (대표님)
-- [ ] Supabase acro-db-prod 생성 (대표님)
-- [ ] R2 acro-store-test 생성 (대표님)
-- [ ] R2 acro-store-prod 생성 (대표님)
+- [ ] Supabase arco-db-test 생성 (대표님)
+- [ ] Supabase arco-db-prod 생성 (대표님)
+- [ ] R2 arco-store-test 생성 (대표님)
+- [ ] R2 arco-store-prod 생성 (대표님)
 - [ ] Stream API 키 발급 (대표님)
 - [ ] .env.local 설정 (대표님)
 - [ ] Vercel 환경 변수 설정 (대표님)
@@ -342,12 +342,12 @@ const result = await uploadMedia({ file, fileName, mimeType });
 
 ### 즉시 (대표님이 진행)
 1. **Supabase 프로젝트 생성**
-   - acro-db-test (개발용)
-   - acro-db-prod (운영용)
+   - arco-db-test (개발용)
+   - arco-db-prod (운영용)
 
 2. **R2 버킷 생성**
-   - acro-store-test (개발용)
-   - acro-store-prod (운영용)
+   - arco-store-test (개발용)
+   - arco-store-prod (운영용)
 
 3. **Stream API 키 발급**
    - Cloudflare Dashboard → Stream → API Tokens
@@ -373,8 +373,8 @@ const result = await uploadMedia({ file, fileName, mimeType });
 ### ✅ 환경 자동 감지
 ```typescript
 const env = getEnv();
-// Development: acro-store-test
-// Production: acro-store-prod
+// Development: arco-store-test
+// Production: arco-store-prod
 ```
 
 ### ✅ 파일 타입 자동 감지

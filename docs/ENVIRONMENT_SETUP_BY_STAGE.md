@@ -6,9 +6,9 @@ ARCO 프로젝트는 3가지 환경을 지원합니다:
 
 | 환경 | 용도 | Supabase | R2 Bucket | 도메인 |
 |------|------|----------|-----------|--------|
-| **Development** | 로컬 개발 | acro-db-test | acro-store-test | localhost:3000 |
-| **Preview** | PR 테스트 | acro-db-test | acro-store-test | preview-xxx.vercel.app |
-| **Production** | 운영 서비스 | acro-db-prod | acro-store-prod | arco.kr |
+| **Development** | 로컬 개발 | arco-db-test | arco-store-test | localhost:3000 |
+| **Preview** | PR 테스트 | arco-db-test | arco-store-test | preview-xxx.vercel.app |
+| **Production** | 운영 서비스 | arco-db-prod | arco-store-prod | arco.kr |
 
 ---
 
@@ -54,13 +54,13 @@ NEXT_PUBLIC_ADMIN_EMAIL=admin@arco.com
 나중에 진짜 테스트 전용 리소스를 만들 때:
 
 ```bash
-# 새 Supabase 프로젝트 생성: acro-db-test
-NEXT_PUBLIC_SUPABASE_URL=https://acro-db-test.supabase.co
+# 새 Supabase 프로젝트 생성: arco-db-test
+NEXT_PUBLIC_SUPABASE_URL=https://arco-db-test.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=new-test-anon-key
 SUPABASE_SERVICE_ROLE_KEY=new-test-service-role-key
 
-# 새 R2 버킷 생성: acro-store-test
-CLOUDFLARE_R2_BUCKET_NAME=acro-store-test
+# 새 R2 버킷 생성: arco-store-test
+CLOUDFLARE_R2_BUCKET_NAME=arco-store-test
 CLOUDFLARE_R2_PUBLIC_URL=https://pub-test-xxxxx.r2.dev
 ```
 
@@ -76,7 +76,7 @@ CLOUDFLARE_R2_PUBLIC_URL=https://pub-test-xxxxx.r2.dev
 
 ```bash
 # Supabase (운영 DB - 나중에 생성)
-NEXT_PUBLIC_SUPABASE_URL=https://acro-db-prod.supabase.co
+NEXT_PUBLIC_SUPABASE_URL=https://arco-db-prod.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=prod-anon-key
 SUPABASE_SERVICE_ROLE_KEY=prod-service-role-key
 
@@ -84,7 +84,7 @@ SUPABASE_SERVICE_ROLE_KEY=prod-service-role-key
 CLOUDFLARE_ACCOUNT_ID=5d66250baed987ff272e39a8b4625f72
 CLOUDFLARE_R2_ACCESS_KEY_ID=prod-access-key-id
 CLOUDFLARE_R2_SECRET_ACCESS_KEY=prod-secret-access-key
-CLOUDFLARE_R2_BUCKET_NAME=acro-store-prod
+CLOUDFLARE_R2_BUCKET_NAME=arco-store-prod
 CLOUDFLARE_R2_PUBLIC_URL=https://pub-prod-xxxxx.r2.dev
 
 # Cloudflare Stream (운영 토큰)
@@ -171,8 +171,8 @@ Production (Vercel) → 운영 DB + 운영 R2 (새로 생성)
 
 ### 나중에 (서비스 오픈 전)
 
-- [ ] Supabase **acro-db-prod** 생성
-- [ ] R2 **acro-store-prod** 버킷 생성
+- [ ] Supabase **arco-db-prod** 생성
+- [ ] R2 **arco-store-prod** 버킷 생성
 - [ ] Vercel Production 환경 변수 설정
 - [ ] 운영 데이터 마이그레이션
 - [ ] 최종 테스트

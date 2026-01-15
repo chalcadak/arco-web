@@ -315,7 +315,7 @@ npx supabase migration list
 ## 📁 **프로젝트 정보**
 
 ### **Supabase 프로젝트**
-- **Project Name**: acro-db-test
+- **Project Name**: arco-db-test
 - **Project Ref**: `xlclmfgsijexddigxvzz`
 - **Project URL**: `https://xlclmfgsijexddigxvzz.supabase.co`
 - **Dashboard**: https://supabase.com/dashboard/project/xlclmfgsijexddigxvzz

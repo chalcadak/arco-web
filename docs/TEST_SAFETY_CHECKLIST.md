@@ -136,7 +136,7 @@ coupons (id)
 ✅ CLOUDFLARE_ACCOUNT_ID=5d66250baed987ff272e39a8b4625f72
 ✅ CLOUDFLARE_R2_ACCESS_KEY_ID=f460f2cae95e216c52eaeb66b8a82f33
 ✅ CLOUDFLARE_R2_SECRET_ACCESS_KEY=77b5f0b258308f172895cf074ab239a9e8142b2239139ad9a9bda552ab708153
-✅ CLOUDFLARE_R2_BUCKET_NAME=acro-store-test
+✅ CLOUDFLARE_R2_BUCKET_NAME=arco-store-test
 ✅ CLOUDFLARE_R2_PUBLIC_URL=https://pub-1fcfffd00023491a85c56483de321c00.r2.dev
 ✅ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ✅ NEXT_PUBLIC_ADMIN_EMAIL=admin@arco.com
@@ -144,7 +144,7 @@ coupons (id)
 
 #### 환경별 DB 분리
 ```
-Development  → xlclmfgsijexddigxvzz (acro-db-test)
+Development  → xlclmfgsijexddigxvzz (arco-db-test)
 Preview      → (동일 또는 별도 설정)
 Production   → (운영 DB - 별도 설정 필요)
 ```

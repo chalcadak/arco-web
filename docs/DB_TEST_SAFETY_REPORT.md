@@ -4,7 +4,7 @@
 
 **검증 날짜**: 2026-01-15  
 **프로젝트**: ARCO 쇼핑몰  
-**데이터베이스**: Supabase (xlclmfgsijexddigxvzz / acro-db-test)  
+**데이터베이스**: Supabase (xlclmfgsijexddigxvzz / arco-db-test)  
 **커밋**: 2e918b1
 
 ---

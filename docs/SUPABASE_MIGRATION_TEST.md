@@ -368,14 +368,14 @@ psql postgresql://postgres:postgres@localhost:54322/postgres -f supabase/migrati
 
 2. ✅ **원격 테스트 DB 적용**
    - Supabase Dashboard → SQL Editor
-   - 테스트 DB에 적용 (`acro-db-test`)
+   - 테스트 DB에 적용 (`arco-db-test`)
 
 3. ✅ **통합 테스트**
    - 로컬 앱에서 기능 확인
    - API 엔드포인트 테스트
 
 4. ✅ **운영 DB 적용**
-   - 최종 검증 후 운영 DB에 적용 (`acro-db-prod`)
+   - 최종 검증 후 운영 DB에 적용 (`arco-db-prod`)
 
 ---
 

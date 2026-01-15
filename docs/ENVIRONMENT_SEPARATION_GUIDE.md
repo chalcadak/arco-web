@@ -10,16 +10,16 @@ ARCO 프로젝트는 **운영(Production)**과 **개발/테스트(Development/Pr
 
 ### Production (운영)
 ```
-- Supabase DB: acro-db-prod
-- R2 Bucket: acro-store-prod
+- Supabase DB: arco-db-prod
+- R2 Bucket: arco-store-prod
 - Stream: 운영용 API 키
 - Domain: https://arco.kr
 ```
 
 ### Development/Preview (개발/테스트)
 ```
-- Supabase DB: acro-db-test
-- R2 Bucket: acro-store-test
+- Supabase DB: arco-db-test
+- R2 Bucket: arco-store-test
 - Stream: 테스트용 API 키
 - Domain: http://localhost:3000 또는 https://preview-xxx.vercel.app
 ```
@@ -61,7 +61,7 @@ src/
 NODE_ENV=development
 
 # Supabase (테스트 DB)
-NEXT_PUBLIC_SUPABASE_URL=https://acro-db-test.supabase.co
+NEXT_PUBLIC_SUPABASE_URL=https://arco-db-test.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-test-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-test-service-role-key
 
@@ -69,7 +69,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-test-service-role-key
 CLOUDFLARE_ACCOUNT_ID=your-account-id
 CLOUDFLARE_R2_ACCESS_KEY_ID=your-access-key
 CLOUDFLARE_R2_SECRET_ACCESS_KEY=your-secret-key
-CLOUDFLARE_R2_BUCKET_NAME=acro-store-test
+CLOUDFLARE_R2_BUCKET_NAME=arco-store-test
 CLOUDFLARE_R2_PUBLIC_URL=https://pub-test.r2.dev
 
 # Cloudflare Stream (테스트 키)
@@ -91,7 +91,7 @@ Vercel Dashboard → Settings → Environment Variables
 **Production 환경만 적용**:
 ```bash
 # Supabase (운영 DB)
-NEXT_PUBLIC_SUPABASE_URL=https://acro-db-prod.supabase.co
+NEXT_PUBLIC_SUPABASE_URL=https://arco-db-prod.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-prod-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-prod-service-role-key
 
@@ -99,7 +99,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-prod-service-role-key
 CLOUDFLARE_ACCOUNT_ID=your-account-id
 CLOUDFLARE_R2_ACCESS_KEY_ID=your-access-key
 CLOUDFLARE_R2_SECRET_ACCESS_KEY=your-secret-key
-CLOUDFLARE_R2_BUCKET_NAME=acro-store-prod
+CLOUDFLARE_R2_BUCKET_NAME=arco-store-prod
 CLOUDFLARE_R2_PUBLIC_URL=https://pub-prod.r2.dev
 
 # Cloudflare Stream (운영 키)
@@ -119,8 +119,8 @@ NEXT_PUBLIC_ADMIN_EMAIL=admin@arco.com
 **Preview 환경만 적용** (테스트 리소스 사용):
 ```bash
 # Development와 동일한 설정
-NEXT_PUBLIC_SUPABASE_URL=https://acro-db-test.supabase.co
-CLOUDFLARE_R2_BUCKET_NAME=acro-store-test
+NEXT_PUBLIC_SUPABASE_URL=https://arco-db-test.supabase.co
+CLOUDFLARE_R2_BUCKET_NAME=arco-store-test
 ...
 ```
 
@@ -258,15 +258,15 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 ## ✅ 체크리스트
 
 ### Supabase 설정
-- [ ] acro-db-test 프로젝트 생성
-- [ ] acro-db-prod 프로젝트 생성
+- [ ] arco-db-test 프로젝트 생성
+- [ ] arco-db-prod 프로젝트 생성
 - [ ] 각각의 URL과 키 발급
 - [ ] .env.local에 test 설정
 - [ ] Vercel에 prod 환경 변수 설정
 
 ### Cloudflare R2 설정
-- [ ] acro-store-test 버킷 생성
-- [ ] acro-store-prod 버킷 생성
+- [ ] arco-store-test 버킷 생성
+- [ ] arco-store-prod 버킷 생성
 - [ ] 각각의 Public URL 설정
 - [ ] Access Key 발급
 - [ ] .env.local에 test 설정
@@ -285,18 +285,18 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 ```
 1. 개발
    └─ localhost:3000
-   └─ acro-db-test
-   └─ acro-store-test
+   └─ arco-db-test
+   └─ arco-store-test
 
 2. PR 생성
    └─ Vercel Preview 배포
-   └─ acro-db-test (Preview 환경 변수)
-   └─ acro-store-test
+   └─ arco-db-test (Preview 환경 변수)
+   └─ arco-store-test
 
 3. main 브랜치 머지
    └─ Vercel Production 배포
-   └─ acro-db-prod (Production 환경 변수)
-   └─ acro-store-prod
+   └─ arco-db-prod (Production 환경 변수)
+   └─ arco-store-prod
 ```
 
 ---

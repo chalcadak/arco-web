@@ -186,7 +186,7 @@ npx supabase db push
 
 ## 🚀 **지금 바로 실행하기**
 
-### **테스트 DB (acro-db-test)이므로 방법 2 권장**
+### **테스트 DB (arco-db-test)이므로 방법 2 권장**
 
 ```bash
 # Step 1: Dashboard SQL Editor
@@ -254,7 +254,7 @@ SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';
 ## 🎯 **대표님께 추천**
 
 ### **지금 상황**
-- ✅ 테스트 DB (acro-db-test)
+- ✅ 테스트 DB (arco-db-test)
 - ✅ 데이터 없음 (또는 테스트 데이터만)
 - ✅ 빠른 해결 필요
 

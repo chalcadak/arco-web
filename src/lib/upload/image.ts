@@ -3,8 +3,8 @@
  * 
  * 이미지 파일을 Cloudflare R2 (S3 호환)에 업로드합니다.
  * 환경별로 다른 버킷을 사용합니다:
- * - Production: acro-store-prod
- * - Development: acro-store-test
+ * - Production: arco-store-prod
+ * - Development: arco-store-test
  */
 
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
