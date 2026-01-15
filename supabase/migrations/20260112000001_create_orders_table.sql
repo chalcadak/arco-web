@@ -73,13 +73,12 @@ CREATE POLICY "Users can read their own orders"
   ON orders FOR SELECT
   USING (customer_email = auth.jwt()->>'email');
 
--- 3. Admins have full access
+-- 3. Admins have full access (simplified - check JWT claim)
+-- Note: Admin role should be set in JWT claims by auth system
 CREATE POLICY "Admins have full access to orders"
   ON orders FOR ALL
   USING (
-    auth.uid() IN (
-      SELECT id FROM admin_users WHERE is_active = true
-    )
+    (auth.jwt()->>'role')::text = 'admin'
   );
 
 -- Function to generate order number
