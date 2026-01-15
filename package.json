@@ -11,6 +11,12 @@
     "test:supabase": "tsx test-supabase.mjs",
     "test:r2": "tsx test-r2.mjs",
     "test:toss": "tsx test-toss.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:codegen": "playwright codegen http://localhost:3000",
+    "test:e2e:report": "playwright show-report",
     "db:push": "supabase db push --linked",
     "db:reset": "supabase db reset --linked",
     "db:diff": "supabase db diff",
@@ -47,6 +53,7 @@
     "zustand": "^5.0.9"
   },
   "devDependencies": {
+    "@playwright/test": "^1.49.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
