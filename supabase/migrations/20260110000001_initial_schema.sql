@@ -2,14 +2,15 @@
 -- Initial schema for premium dog fashion platform
 -- Created: 2026-01-10
 
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- Note: PostgreSQL 13+ has gen_random_uuid() built-in, no extension needed
+-- But we keep uuid-ossp for compatibility if needed elsewhere
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA extensions;
 
 -- ============================================================================
 -- USERS TABLE
 -- ============================================================================
 CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email VARCHAR(255) UNIQUE NOT NULL,
   name VARCHAR(100),
   phone VARCHAR(20),
@@ -48,7 +49,7 @@ INSERT INTO categories (name, slug, type, display_order) VALUES
 -- PRODUCTS TABLE (판매상품)
 -- ============================================================================
 CREATE TABLE products (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   category_id INTEGER REFERENCES categories(id),
   name VARCHAR(200) NOT NULL,
   description TEXT,
@@ -90,7 +91,7 @@ CREATE INDEX idx_products_created_at ON products(created_at DESC);
 -- PHOTOSHOOT_LOOKS TABLE (촬영룩)
 -- ============================================================================
 CREATE TABLE photoshoot_looks (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   category_id INTEGER REFERENCES categories(id),
   name VARCHAR(200) NOT NULL,
   description TEXT,
@@ -130,7 +131,7 @@ CREATE INDEX idx_photoshoot_looks_is_active ON photoshoot_looks(is_active);
 -- ORDERS TABLE (주문)
 -- ============================================================================
 CREATE TABLE orders (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES users(id),
   order_number VARCHAR(50) UNIQUE NOT NULL,
   
@@ -187,7 +188,7 @@ CREATE INDEX idx_orders_created_at ON orders(created_at DESC);
 -- ORDER_ITEMS TABLE (주문 상품)
 -- ============================================================================
 CREATE TABLE order_items (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
   product_id UUID REFERENCES products(id),
   
@@ -216,7 +217,7 @@ CREATE INDEX idx_order_items_product_id ON order_items(product_id);
 -- BOOKINGS TABLE (촬영 예약)
 -- ============================================================================
 CREATE TABLE bookings (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES users(id),
   photoshoot_look_id UUID REFERENCES photoshoot_looks(id),
   booking_number VARCHAR(50) UNIQUE NOT NULL,
@@ -272,7 +273,7 @@ CREATE INDEX idx_bookings_status ON bookings(status);
 -- GALLERIES TABLE (납품 갤러리)
 -- ============================================================================
 CREATE TABLE galleries (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   booking_id UUID REFERENCES bookings(id) ON DELETE CASCADE,
   
   -- 토큰 기반 접근
@@ -310,7 +311,7 @@ CREATE INDEX idx_galleries_is_active ON galleries(is_active);
 -- GALLERY_IMAGES TABLE (갤러리 이미지)
 -- ============================================================================
 CREATE TABLE gallery_images (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   gallery_id UUID REFERENCES galleries(id) ON DELETE CASCADE,
   
   -- 이미지 정보

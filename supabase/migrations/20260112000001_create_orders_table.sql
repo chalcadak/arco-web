@@ -1,6 +1,6 @@
 -- Create orders table
 CREATE TABLE IF NOT EXISTS orders (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   
   -- 주문 정보
   order_number VARCHAR(20) UNIQUE NOT NULL,
