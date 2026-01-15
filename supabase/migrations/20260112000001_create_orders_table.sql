@@ -78,7 +78,7 @@ CREATE POLICY "Admins have full access to orders"
   ON orders FOR ALL
   USING (
     auth.uid() IN (
-      SELECT id FROM users WHERE role = 'admin'
+      SELECT id FROM admin_users WHERE is_active = true
     )
   );
 
