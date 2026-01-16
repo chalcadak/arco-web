@@ -119,6 +119,58 @@ COMMENT ON POLICY "orders_anonymous_insert" ON orders IS
 'Allow anyone to create orders (including guest users)';
 
 -- ============================================================================
+-- STEP 5: Create service_role bypass policies (for testing and admin access)
+-- ============================================================================
+
+-- Service role needs full access for testing and administrative tasks
+-- These policies allow SERVICE_ROLE_KEY to bypass RLS
+
+-- Drop existing service_role policies (if any)
+DROP POLICY IF EXISTS "service_role_full_access_categories" ON categories;
+DROP POLICY IF EXISTS "service_role_full_access_products" ON products;
+DROP POLICY IF EXISTS "service_role_full_access_photoshoot_looks" ON photoshoot_looks;
+DROP POLICY IF EXISTS "service_role_full_access_bookings" ON bookings;
+DROP POLICY IF EXISTS "service_role_full_access_orders" ON orders;
+
+-- Grant privileges to service_role
+GRANT ALL ON categories TO service_role;
+GRANT ALL ON products TO service_role;
+GRANT ALL ON photoshoot_looks TO service_role;
+GRANT ALL ON bookings TO service_role;
+GRANT ALL ON orders TO service_role;
+
+-- Create bypass policies for service_role
+CREATE POLICY "service_role_full_access_categories"
+ON categories FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+CREATE POLICY "service_role_full_access_products"
+ON products FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+CREATE POLICY "service_role_full_access_photoshoot_looks"
+ON photoshoot_looks FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+CREATE POLICY "service_role_full_access_bookings"
+ON bookings FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+CREATE POLICY "service_role_full_access_orders"
+ON orders FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+COMMENT ON POLICY "service_role_full_access_categories" ON categories IS 
+'Allow service_role to bypass RLS for testing and administrative tasks';
+
+COMMENT ON POLICY "service_role_full_access_products" ON products IS 
+'Allow service_role to bypass RLS for testing and administrative tasks';
+
+COMMENT ON POLICY "service_role_full_access_photoshoot_looks" ON photoshoot_looks IS 
+'Allow service_role to bypass RLS for testing and administrative tasks';
+
+COMMENT ON POLICY "service_role_full_access_bookings" ON bookings IS 
+'Allow service_role to bypass RLS for testing and administrative tasks';
+
+COMMENT ON POLICY "service_role_full_access_orders" ON orders IS 
+'Allow service_role to bypass RLS for testing and administrative tasks';
+
+-- ============================================================================
 -- VERIFICATION
 -- ============================================================================
 
