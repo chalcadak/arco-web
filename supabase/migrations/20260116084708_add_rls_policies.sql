@@ -8,6 +8,19 @@
 -- ============================================================================
 
 -- ============================================================================
+-- STEP 1: Enable RLS on all tables (CRITICAL!)
+-- ============================================================================
+ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE photoshoot_looks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE bookings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+
+-- ============================================================================
+-- STEP 2: Create Policies
+-- ============================================================================
+
+-- ============================================================================
 -- CATEGORIES: Public Read Access
 -- ============================================================================
 -- Categories should be viewable by everyone
