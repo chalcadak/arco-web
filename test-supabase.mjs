@@ -77,7 +77,46 @@ const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
     schema: 'public'
   }
 });
-console.log('   ✅ 클라이언트 생성 완료 (SERVICE_ROLE_KEY 사용)\n');
+console.log('   ✅ 클라이언트 생성 완료 (SERVICE_ROLE_KEY 사용)');
+
+// 2.5️⃣ SERVICE_ROLE_KEY 권한 확인
+console.log('\n🔍 2.5단계: SERVICE_ROLE_KEY 권한 확인');
+try {
+  const { data: roleCheck, error: roleError } = await supabase.rpc('auth.role');
+  if (roleError) {
+    console.log('   ℹ️  직접 role 확인 실패 (정상일 수 있음)');
+  }
+  
+  // 간단한 쿼리로 권한 확인
+  const { data: testQuery, error: testError } = await supabase
+    .from('categories')
+    .select('count', { count: 'exact', head: true });
+  
+  if (testError) {
+    if (testError.code === '42501') {
+      console.error('   ❌ SERVICE_ROLE_KEY에 권한이 없습니다!');
+      console.error('   💡 원인: RLS가 활성화되어 있지만 SERVICE_ROLE_KEY가 RLS를 우회하지 못함');
+      console.error('\n   🔧 해결 방법:');
+      console.error('   1. Supabase Dashboard SQL Editor 열기:');
+      console.error('      https://supabase.com/dashboard/project/xlclmfgsijexddigxvzz/editor\n');
+      console.error('   2. 다음 SQL 실행하여 RLS 비활성화 (테스트용):');
+      console.error('      ALTER TABLE categories DISABLE ROW LEVEL SECURITY;');
+      console.error('      ALTER TABLE products DISABLE ROW LEVEL SECURITY;');
+      console.error('      ALTER TABLE photoshoot_looks DISABLE ROW LEVEL SECURITY;');
+      console.error('      ALTER TABLE bookings DISABLE ROW LEVEL SECURITY;');
+      console.error('      ALTER TABLE orders DISABLE ROW LEVEL SECURITY;\n');
+      console.error('   3. 또는 마이그레이션 파일 실행:');
+      console.error('      supabase/migrations/20260116090920_enable_rls_and_policies.sql\n');
+      process.exit(1);
+    }
+    console.log('   ⚠️  권한 확인 중 에러:', testError.message);
+  } else {
+    console.log('   ✅ SERVICE_ROLE_KEY 권한 정상 확인됨');
+  }
+} catch (err) {
+  console.log('   ℹ️  권한 확인 건너뜀');
+}
+console.log('');
 
 // 3️⃣ 데이터베이스 연결 테스트
 console.log('🗄️  3단계: 데이터베이스 연결 테스트\n');
