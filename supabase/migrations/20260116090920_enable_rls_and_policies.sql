@@ -29,7 +29,19 @@ ALTER TABLE bookings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================================
--- STEP 2: Create policies for PUBLIC tables
+-- STEP 2: Drop existing policies (if any) to ensure clean state
+-- ============================================================================
+
+DROP POLICY IF EXISTS "categories_public_read" ON categories;
+DROP POLICY IF EXISTS "products_public_read" ON products;
+DROP POLICY IF EXISTS "photoshoot_looks_public_read" ON photoshoot_looks;
+DROP POLICY IF EXISTS "bookings_user_read" ON bookings;
+DROP POLICY IF EXISTS "bookings_anonymous_insert" ON bookings;
+DROP POLICY IF EXISTS "orders_user_read" ON orders;
+DROP POLICY IF EXISTS "orders_anonymous_insert" ON orders;
+
+-- ============================================================================
+-- STEP 3: Create policies for PUBLIC tables
 -- ============================================================================
 
 -- Categories: Public read access
@@ -60,7 +72,7 @@ COMMENT ON POLICY "photoshoot_looks_public_read" ON photoshoot_looks IS
 'Allow all users to view photoshoot looks';
 
 -- ============================================================================
--- STEP 3: Create policies for PRIVATE tables
+-- STEP 4: Create policies for PRIVATE tables
 -- ============================================================================
 
 -- Bookings: Users can view their own bookings (by email) or admins can view all
